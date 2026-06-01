@@ -1,6 +1,6 @@
 /* global THESES, TICKER_ORDER, TICKER_LABELS, TICKER_META, DEFAULT_WATCHLIST,
    IPOS, IPO_ORDER, IPO_BY_ID, IPO_CATEGORIES, ipoMetrics, ipoMatchesCategories,
-   pt, fmtPct, weightedPT, upside, Chart, MiniPlot */
+   pt, fmtPct, weightedPT, upside, Chart, MiniPlot, ChipStack */
 (function () {
   // -------------------- Store --------------------
   const STORE_KEY = "ff.v1";
@@ -10,6 +10,7 @@
     thesisView: "thesis", // "thesis" | "valuation"
     alerts: [],
     ipoFilters: { status: "all", categories: [] }, // status: "all" | "upcoming" | "priced"
+    stackFilter: "all",
   });
 
   function loadStore() {
@@ -100,7 +101,7 @@
   }
 
   // -------------------- Router --------------------
-  // routes: #/markets, #/theses, #/theses/<id>, #/theses/<id>/valuation, #/alerts, #/settings
+  // routes: #/markets, #/theses, #/theses/<id>, #/ipo, #/stack, #/stack/<ticker>, #/alerts, #/settings
   function parseRoute() {
     const h = location.hash || "";
     // Legacy support: ?t=ibm#thesis or #valuation
@@ -120,6 +121,10 @@
       if (!a) return { tab: "ipo" };
       if (!IPO_BY_ID[a]) return { tab: "ipo" };
       return { tab: "ipo", ipoId: a };
+    }
+    if (head === "stack") {
+      if (!a) return { tab: "stack" };
+      return { tab: "stack", stackTicker: decodeURIComponent(a) };
     }
     if (head === "theses") {
       if (!a) return { tab: "theses" };
@@ -161,6 +166,7 @@
       { id: "markets",  label: "Markets",  hint: "Your watchlist" },
       { id: "theses",   label: "Theses",   hint: "Deep-dive reports" },
       { id: "ipo",      label: "IPO",      hint: "Recent & upcoming" },
+      { id: "stack",    label: "Stack",    hint: "AI chip bottlenecks" },
       { id: "alerts",   label: "Alerts",   hint: "Price + thesis" },
       { id: "settings", label: "Settings", hint: "Preferences" },
     ];
@@ -853,6 +859,47 @@
     setHeader(rec.ticker, null);
   }
 
+  // -------------------- Views: AI chip stack --------------------
+  function getStackFilter() {
+    if (!state.stackFilter) state.stackFilter = "all";
+    return state.stackFilter;
+  }
+
+  function renderStack(stackTicker) {
+    destroyCharts();
+    setHeader("Stack", {
+      label: "Method",
+      icon: `<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5"/><path d="M12 8h.01"/></svg>`,
+      onClick: () => ChipStack.openMethod({ openSheet }),
+    });
+
+    const ctx = {
+      filter: getStackFilter(),
+      deepTicker: stackTicker || null,
+      openSheet,
+      toast,
+      setFilter: (id) => {
+        state.stackFilter = id;
+        saveStore();
+        renderStack();
+      },
+      onOpenCompany: (ticker) => {
+        const url = new URL(location.href);
+        url.search = "";
+        url.hash = `#/stack/${encodeURIComponent(ticker)}`;
+        history.replaceState(null, "", url);
+      },
+      onDeepLinkConsumed: () => {
+        const url = new URL(location.href);
+        url.search = "";
+        url.hash = "#/stack";
+        history.replaceState(null, "", url);
+      },
+    };
+
+    ChipStack.renderIndex(ctx);
+  }
+
   // -------------------- Views: Alerts --------------------
   function renderAlerts() {
     document.getElementById("view").innerHTML = `
@@ -960,6 +1007,7 @@
       if (r.ipoId) renderIpoDetail(r.ipoId);
       else renderIpoIndex();
     }
+    else if (r.tab === "stack") renderStack(r.stackTicker);
     else if (r.tab === "alerts") renderAlerts();
     else if (r.tab === "settings") renderSettings();
 

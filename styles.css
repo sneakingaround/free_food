@@ -113,7 +113,7 @@ a:hover { color: var(--accent-2); }
 .tabbar {
   position: sticky; bottom: 0; z-index: 30;
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(6, 1fr);
   gap: 0;
   height: calc(var(--tabbar-h) + var(--safe-bottom));
   padding-bottom: var(--safe-bottom);
@@ -547,6 +547,65 @@ a:hover { color: var(--accent-2); }
 .zone-sym { font-weight: 800; font-size: 0.78rem; letter-spacing: -0.01em; min-width: 42px; }
 .zone-zones { display: flex; flex-wrap: wrap; gap: 0.3rem; }
 .zone-empty { color: var(--faint); font-size: 0.82rem; }
+
+/* ============================================================
+   AI CHIP STACK
+   ============================================================ */
+.stack-hero { margin-bottom: 0.4rem; }
+.layer-head {
+  display: flex; align-items: baseline; gap: 0.55rem;
+  margin: 1.6rem 0 0.7rem;
+}
+.layer-num {
+  font-size: 0.72rem; font-weight: 800; letter-spacing: 0.04em;
+  color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 14%, transparent);
+  border: 1px solid color-mix(in srgb, var(--accent) 30%, var(--border-soft));
+  border-radius: 7px;
+  padding: 0.15rem 0.45rem;
+  font-variant-numeric: tabular-nums;
+}
+.layer-title { font-size: 1.02rem; font-weight: 750; letter-spacing: -0.02em; }
+.layer-sub { font-size: 0.72rem; color: var(--faint); margin-left: auto; }
+.score-pill { display: inline-flex; align-items: baseline; gap: 0.12rem; font-variant-numeric: tabular-nums; }
+.score-pill b { font-size: 0.72rem; }
+.priv-dot {
+  display: inline-block; width: 6px; height: 6px; border-radius: 999px;
+  background: var(--warning); margin-right: 0.35rem; vertical-align: middle;
+}
+.flow-group { margin-top: 0.5rem; }
+.flow-label {
+  font-size: 0.68rem; font-weight: 700; letter-spacing: 0.03em;
+  text-transform: uppercase; color: var(--faint); margin-bottom: 0.4rem;
+}
+.flow-list { list-style: none; display: flex; flex-direction: column; gap: 0.35rem; }
+.flow-item {
+  display: flex; align-items: center; gap: 0.55rem;
+  width: 100%; text-align: left;
+  appearance: none; cursor: pointer;
+  background: var(--surface); border: 1px solid var(--border-soft);
+  border-radius: var(--radius-sm);
+  padding: 0.5rem 0.6rem;
+  color: var(--text);
+  transition: background 0.18s var(--ease), border-color 0.18s var(--ease);
+}
+.flow-item:hover { background: var(--surface-2); border-color: var(--border); }
+.flow-item[disabled] { cursor: default; opacity: 0.85; }
+.flow-item[disabled]:hover { background: var(--surface); border-color: var(--border-soft); }
+.flow-arrow { color: var(--faint); flex: 0 0 auto; }
+.flow-node { font-weight: 650; letter-spacing: -0.01em; }
+.flow-rel { font-size: 0.68rem; color: var(--faint); margin-left: auto; white-space: nowrap; }
+.flow-w {
+  font-size: 0.62rem; font-weight: 800; font-variant-numeric: tabular-nums;
+  padding: 0.1rem 0.38rem; border-radius: 999px;
+  background: var(--surface-3); color: var(--muted);
+}
+.flow-w.w5 { background: color-mix(in srgb, var(--success) 18%, transparent); color: var(--success); }
+.flow-w.w4 { background: color-mix(in srgb, var(--info) 18%, transparent); color: var(--info); }
+.src-list { list-style: none; display: flex; flex-direction: column; gap: 0.3rem; }
+.src-list a { font-size: 0.78rem; word-break: break-all; }
+.sheet-tags { display: flex; flex-wrap: wrap; gap: 0.3rem; margin: 0.5rem 0 0.2rem; }
+.tabbar .tab span { font-size: 0.62rem; }
 
 /* ============================================================
    IPO PLAY
