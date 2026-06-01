@@ -32,6 +32,7 @@ jobs:
           rm -rf docs
           mkdir -p docs
           cp index.html styles.css app.js data.js vpvr.js chart.umd.min.js .nojekyll docs/
+          cp ai-chip-stack.html ai-chip-stack-model.json ai-chip-stack-sankey.csv ai-chip-stack-crosscheck.json docs/
           cp -r market docs/
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
