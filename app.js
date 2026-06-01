@@ -1031,7 +1031,7 @@
           <li class="settings-row">
             <div class="settings-l">
               <div class="settings-label">About</div>
-              <div class="settings-hint">Free Food · v0.2 · MIT · <a href="https://github.com/sneakingaround/free_food" target="_blank" rel="noopener">source</a></div>
+              <div class="settings-hint">Free Food · build <strong id="settings-build">${window.__FF_BUILD || "?"}</strong> · <a href="https://github.com/sneakingaround/free_food" target="_blank" rel="noopener">source</a></div>
             </div>
           </li>
         </ul>
@@ -1126,7 +1126,22 @@
     if (sp && THESES[sp]) navigate(`#/theses/${sp}`, { replace: true });
   }
 
+  function initBuildStamp() {
+    const build = document.querySelector('meta[name="ff-build"]')?.content || "dev";
+    const el = document.getElementById("drawer-version");
+    if (el && build !== "__BUILD__") el.textContent = `build ${build}`;
+    if (build && build !== "__BUILD__" && build !== "dev") {
+      try {
+        const prev = localStorage.getItem("ff.build");
+        if (prev && prev !== build) toast(`App updated · build ${build}`);
+        localStorage.setItem("ff.build", build);
+      } catch {}
+    }
+    window.__FF_BUILD = build;
+  }
+
   document.addEventListener("DOMContentLoaded", () => {
+    initBuildStamp();
     bindShell();
     initTelegram();
     render();

@@ -29,11 +29,14 @@ jobs:
 
       - name: Publish to docs/ (served from main branch)
         run: |
+          BUILD="$(git rev-parse --short HEAD)"
           rm -rf docs
           mkdir -p docs
           cp index.html styles.css app.js chip-stack.js thesis-charts.js data.js vpvr.js chart.umd.min.js .nojekyll docs/
           cp ai-chip-stack.html ai-chip-stack-model.json ai-chip-stack-sankey.csv ai-chip-stack-crosscheck.json docs/
           cp -r market docs/
+          sed -i "s/__BUILD__/${BUILD}/g" docs/index.html
+          echo "{\"build\":\"${BUILD}\",\"builtAt\":\"$(date -u +%Y-%m-%dT%H:%MZ)\"}" > docs/build.json
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add docs

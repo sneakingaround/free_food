@@ -6,6 +6,15 @@ Mobile-friendly static cards for **IBM**, **ServiceNow (NOW)**, **Nokia (NOK)**,
 
 **https://sneakingaround.github.io/free_food/**
 
+Use that exact URL (project site under `/free_food/`). The repo root URL is not the app.
+
+### If you still see an old version
+
+1. Open **Settings** in the app — **build** should be a short git hash (e.g. `6d48a33`), not `__BUILD__` or `dev`.
+2. Hard refresh: `Ctrl+Shift+R` (Safari: clear website data for `github.io`).
+3. In **Telegram**: fully close the mini-app and reopen the bot link (it caches aggressively).
+4. Confirm you are not opening a local `file://` copy or a different host (Vercel, etc.).
+
 ### If you see 404 (one-time fix)
 
 1. Open **https://github.com/sneakingaround/free_food/settings/pages**
