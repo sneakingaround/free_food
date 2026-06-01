@@ -166,7 +166,7 @@
       { id: "markets",  label: "Markets",  hint: "Your watchlist" },
       { id: "theses",   label: "Theses",   hint: "Deep-dive reports" },
       { id: "ipo",      label: "IPO",      hint: "Recent & upcoming" },
-      { id: "stack",    label: "Stack",    hint: "AI chip bottlenecks" },
+      { id: "stack",    label: "Chip stack", hint: "AI bottleneck map" },
       { id: "alerts",   label: "Alerts",   hint: "Price + thesis" },
       { id: "settings", label: "Settings", hint: "Preferences" },
     ];
@@ -446,6 +446,16 @@
             <div class="screen-sub">${TICKER_ORDER.length} deep dives · scenario-weighted price targets</div>
           </div>
         </div>
+        <button type="button" class="stack-entry" id="go-chip-stack">
+          <span class="stack-entry-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14h16M4 10h16M4 6h10M4 18h12"/></svg>
+          </span>
+          <span class="stack-entry-main">
+            <div class="stack-entry-title">AI chip bottleneck stack</div>
+            <div class="stack-entry-sub">28 names · supply-chain map · upstream/downstream flows</div>
+          </span>
+          <svg class="stack-entry-arrow" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+        </button>
         <div class="thesis-grid">${cards}</div>
         <section class="movers">
           <div class="movers-head">About the framework</div>
@@ -454,6 +464,7 @@
       </section>
     `;
     setHeader("Theses", null);
+    document.getElementById("go-chip-stack")?.addEventListener("click", () => navigate("#/stack"));
     document.querySelectorAll("[data-thesis]").forEach((b) => {
       b.addEventListener("click", () => navigate(`#/theses/${b.dataset.thesis}`));
     });
@@ -867,7 +878,19 @@
 
   function renderStack(stackTicker) {
     destroyCharts();
-    setHeader("Stack", {
+    closeSheet();
+    if (!window.ChipStack) {
+      document.getElementById("view").innerHTML = `
+        <section class="screen">
+          <div class="empty">
+            <div class="empty-title">Stack module failed to load</div>
+            <div class="empty-sub">Hard refresh the page. If this persists, chip-stack.js may be missing from the deploy.</div>
+          </div>
+        </section>`;
+      setHeader("Chip stack", null);
+      return;
+    }
+    setHeader("Chip stack", {
       label: "Method",
       icon: `<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5"/><path d="M12 8h.01"/></svg>`,
       onClick: () => ChipStack.openMethod({ openSheet }),
@@ -996,7 +1019,8 @@
       return;
     }
     renderDrawerNav(r.tab);
-    document.querySelectorAll(".tab").forEach((t) => t.classList.toggle("active", t.dataset.tab === r.tab));
+    const tabActive = r.tab === "stack" ? null : r.tab;
+    document.querySelectorAll(".tab").forEach((t) => t.classList.toggle("active", t.dataset.tab === tabActive));
 
     if (r.tab === "markets") renderMarkets();
     else if (r.tab === "theses") {
@@ -1046,6 +1070,7 @@
       const r = parseRoute();
       if (r.tab === "theses" && r.thesisId) navigate("#/theses");
       else if (r.tab === "ipo" && r.ipoId) navigate("#/ipo");
+      else if (r.tab === "stack") navigate("#/theses");
       else tg.close();
     });
     if (tg.colorScheme === "light") {

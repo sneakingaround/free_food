@@ -45,6 +45,10 @@
 
   const cache = { model: null, load: null };
 
+  function modelUrl() {
+    return new URL("ai-chip-stack-model.json", document.baseURI).href;
+  }
+
   function esc(s) {
     return String(s == null ? "" : s).replace(/[&<>"']/g, (c) => (
       { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]
@@ -116,7 +120,7 @@
   function ensureLoaded() {
     if (cache.model) return Promise.resolve(cache.model);
     if (cache.load) return cache.load;
-    cache.load = fetch("ai-chip-stack-model.json")
+    cache.load = fetch(modelUrl())
       .then((r) => {
         if (!r.ok) throw new Error(`HTTP ${r.status}`);
         return r.json();
