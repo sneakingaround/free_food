@@ -3,16 +3,78 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="theme-color" content="#0f1117" />
-  <title>Investment Theses</title>
+  <meta name="theme-color" content="#0a0b0f" />
+  <title>Free Food — Markets, Theses, Watchlist</title>
   <link rel="stylesheet" href="styles.css" />
   <script src="chart.umd.min.js"></script>
 </head>
 <body>
-  <div class="wrap">
-    <div id="top-bar" class="top-bar"></div>
-    <main id="main"></main>
+  <div id="app" class="app">
+    <header id="app-header" class="app-header">
+      <button type="button" id="btn-drawer" class="icon-btn" aria-label="Open menu">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 7h18M3 12h18M3 17h18"/></svg>
+      </button>
+      <div class="app-header-title" id="header-title">Markets</div>
+      <button type="button" id="btn-action" class="icon-btn" aria-label="Action">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+      </button>
+    </header>
+
+    <main id="view" class="view"></main>
+
+    <nav id="tabbar" class="tabbar" aria-label="Primary">
+      <button type="button" class="tab" data-tab="markets" aria-label="Markets">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l5-5 4 4 7-9"/><path d="M14 7h5v5"/></svg>
+        <span>Markets</span>
+      </button>
+      <button type="button" class="tab" data-tab="theses" aria-label="Theses">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h13a3 3 0 013 3v13H7a3 3 0 01-3-3V4z"/><path d="M4 17a3 3 0 013-3h13"/></svg>
+        <span>Theses</span>
+      </button>
+      <button type="button" class="tab" data-tab="alerts" aria-label="Alerts">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 1112 0c0 6 3 7 3 7H3s3-1 3-7z"/><path d="M10 21a2 2 0 004 0"/></svg>
+        <span>Alerts</span>
+      </button>
+      <button type="button" class="tab" data-tab="settings" aria-label="Settings">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 00.34 1.87l.06.06a2 2 0 01-2.83 2.83l-.06-.06a1.7 1.7 0 00-1.87-.34 1.7 1.7 0 00-1.04 1.56V21a2 2 0 01-4 0v-.08a1.7 1.7 0 00-1.11-1.56 1.7 1.7 0 00-1.87.34l-.06.06A2 2 0 014.13 16.93l.06-.06A1.7 1.7 0 004.53 15a1.7 1.7 0 00-1.56-1.04H3a2 2 0 010-4h.08A1.7 1.7 0 004.6 8.91a1.7 1.7 0 00-.34-1.87l-.06-.06a2 2 0 012.83-2.83l.06.06a1.7 1.7 0 001.87.34H9a1.7 1.7 0 001.04-1.56V3a2 2 0 014 0v.08a1.7 1.7 0 001.04 1.56 1.7 1.7 0 001.87-.34l.06-.06a2 2 0 012.83 2.83l-.06.06a1.7 1.7 0 00-.34 1.87V9c.27.61.86 1 1.51 1.04H21a2 2 0 010 4h-.08a1.7 1.7 0 00-1.52 1.04z"/></svg>
+        <span>Settings</span>
+      </button>
+    </nav>
+
+    <aside id="drawer" class="drawer" aria-hidden="true">
+      <div class="drawer-scrim" data-close></div>
+      <div class="drawer-panel" role="dialog" aria-label="Menu">
+        <div class="drawer-head">
+          <div class="drawer-brand">
+            <div class="brand-mark">F</div>
+            <div>
+              <div class="brand-name">Free Food</div>
+              <div class="brand-sub">Markets · Theses · Watchlist</div>
+            </div>
+          </div>
+          <button type="button" class="icon-btn" data-close aria-label="Close menu">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+          </button>
+        </div>
+        <nav class="drawer-nav" id="drawer-nav"></nav>
+        <div class="drawer-foot">
+          <a class="drawer-link" href="https://github.com/sneakingaround/free_food" target="_blank" rel="noopener">View source on GitHub</a>
+          <div class="drawer-version" id="drawer-version">v0.2 · 2026-06-01</div>
+        </div>
+      </div>
+    </aside>
+
+    <div id="sheet" class="sheet" aria-hidden="true">
+      <div class="sheet-scrim" data-close></div>
+      <div class="sheet-panel" role="dialog" aria-label="Sheet">
+        <div class="sheet-handle"></div>
+        <div class="sheet-content" id="sheet-content"></div>
+      </div>
+    </div>
+
+    <div id="toast" class="toast" aria-live="polite"></div>
   </div>
+
   <script src="data.js"></script>
   <script src="vpvr.js"></script>
   <script src="app.js"></script>

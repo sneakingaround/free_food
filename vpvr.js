@@ -288,6 +288,58 @@ window.MiniPlot = (function () {
     }, 150);
   });
 
+  function drawSparkline(canvas, bars, opts) {
+    const o = opts || {};
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const W = Math.max(canvas.clientWidth || canvas.parentElement?.clientWidth || 0, 60);
+    const H = canvas.clientHeight || 32;
+    canvas.width = W * dpr;
+    canvas.height = H * dpr;
+    const ctx = canvas.getContext("2d");
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.clearRect(0, 0, W, H);
+    if (!bars || !bars.length) return;
+    let minP = Infinity;
+    let maxP = -Infinity;
+    for (const b of bars) {
+      if (b.l < minP) minP = b.l;
+      if (b.h > maxP) maxP = b.h;
+    }
+    if (maxP === minP) maxP = minP + 1;
+    const pad = 2;
+    const w = W - pad * 2;
+    const h = H - pad * 2;
+    const n = bars.length;
+    const xs = (i) => pad + (i / Math.max(1, n - 1)) * w;
+    const ys = (p) => pad + h - ((p - minP) / (maxP - minP)) * h;
+    const first = bars[0].c;
+    const last = bars[n - 1].c;
+    const up = last >= first;
+    const color = o.color || (up ? "#3dd68c" : "#f87171");
+    const fill = o.fill || (up ? "rgba(61,214,140,0.16)" : "rgba(248,113,113,0.16)");
+
+    ctx.beginPath();
+    ctx.moveTo(xs(0), ys(bars[0].c));
+    for (let i = 1; i < n; i++) ctx.lineTo(xs(i), ys(bars[i].c));
+    ctx.lineTo(xs(n - 1), pad + h);
+    ctx.lineTo(xs(0), pad + h);
+    ctx.closePath();
+    ctx.fillStyle = fill;
+    ctx.fill();
+
+    ctx.beginPath();
+    ctx.moveTo(xs(0), ys(bars[0].c));
+    for (let i = 1; i < n; i++) ctx.lineTo(xs(i), ys(bars[i].c));
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 1.4;
+    ctx.stroke();
+
+    ctx.fillStyle = color;
+    ctx.beginPath();
+    ctx.arc(xs(n - 1), ys(last), 2.2, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
   return {
     mount(activeId) {
       lastId = activeId;
@@ -295,5 +347,6 @@ window.MiniPlot = (function () {
     },
     loadBars,
     computeVPVR,
+    drawSparkline,
   };
 })();

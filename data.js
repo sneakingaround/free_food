@@ -182,6 +182,15 @@ const TICKER_ORDER = ["ibm", "now", "nok", "intc"];
 const TICKER_LABELS = { ibm: "IBM", now: "NOW", nok: "NOK", intc: "INTC" };
 const YAHOO_SYMBOL = { ibm: "IBM", now: "NOW", nok: "NOK", intc: "INTC" };
 
+const TICKER_META = {
+  ibm:  { id: "ibm",  symbol: "IBM",  name: "International Business Machines", exchange: "NYSE",   sector: "Technology — IT Services",      hasThesis: true },
+  now:  { id: "now",  symbol: "NOW",  name: "ServiceNow, Inc.",                exchange: "NYSE",   sector: "Technology — Application SW",   hasThesis: true },
+  nok:  { id: "nok",  symbol: "NOK",  name: "Nokia Oyj (ADR)",                 exchange: "NYSE",   sector: "Comms Equipment",               hasThesis: true },
+  intc: { id: "intc", symbol: "INTC", name: "Intel Corporation",               exchange: "NASDAQ", sector: "Semiconductors",                hasThesis: true },
+};
+
+const DEFAULT_WATCHLIST = ["ibm", "now", "nok", "intc"];
+
 function pt(s) {
   return s.eps * s.exitPe;
 }
