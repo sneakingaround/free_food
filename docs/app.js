@@ -1,4 +1,5 @@
 /* global THESES, TICKER_ORDER, TICKER_LABELS, TICKER_META, DEFAULT_WATCHLIST,
+   IPOS, IPO_ORDER, IPO_BY_ID, IPO_CATEGORIES, ipoMetrics, ipoMatchesCategories,
    pt, fmtPct, weightedPT, upside, Chart, MiniPlot */
 (function () {
   // -------------------- Store --------------------
@@ -8,6 +9,7 @@
     activeThesis: "ibm",
     thesisView: "thesis", // "thesis" | "valuation"
     alerts: [],
+    ipoFilters: { status: "all", categories: [] }, // status: "all" | "upcoming" | "priced"
   });
 
   function loadStore() {
@@ -114,6 +116,11 @@
     if (head === "markets") return { tab: "markets" };
     if (head === "alerts") return { tab: "alerts" };
     if (head === "settings") return { tab: "settings" };
+    if (head === "ipo") {
+      if (!a) return { tab: "ipo" };
+      if (!IPO_BY_ID[a]) return { tab: "ipo" };
+      return { tab: "ipo", ipoId: a };
+    }
     if (head === "theses") {
       if (!a) return { tab: "theses" };
       if (!THESES[a]) return { tab: "theses" };
@@ -153,6 +160,7 @@
     const items = [
       { id: "markets",  label: "Markets",  hint: "Your watchlist" },
       { id: "theses",   label: "Theses",   hint: "Deep-dive reports" },
+      { id: "ipo",      label: "IPO",      hint: "Recent & upcoming" },
       { id: "alerts",   label: "Alerts",   hint: "Price + thesis" },
       { id: "settings", label: "Settings", hint: "Preferences" },
     ];
@@ -624,6 +632,227 @@
     });
   }
 
+  // -------------------- Views: IPO Play --------------------
+  function ipoMoney(v) { return v == null ? "—" : `$${v.toFixed(2)}`; }
+  function ipoPctStr(v) { return v == null ? "—" : `${v >= 0 ? "+" : ""}${v.toFixed(0)}%`; }
+  function ipoStatusPill(rec) {
+    return rec.status === "upcoming"
+      ? `<span class="pill-sm info">Upcoming</span>`
+      : `<span class="pill-sm success">Recent</span>`;
+  }
+  function ipoCatTags(rec) {
+    return `<div class="cat-tags">${rec.categories.map((c) => `<span class="cat-tag">${c}</span>`).join("")}</div>`;
+  }
+
+  function getIpoFilters() {
+    const f = state.ipoFilters || { status: "all", categories: [] };
+    if (!Array.isArray(f.categories)) f.categories = [];
+    if (!f.status) f.status = "all";
+    state.ipoFilters = f;
+    return f;
+  }
+
+  function renderIpoIndex() {
+    const f = getIpoFilters();
+    const visible = IPO_ORDER
+      .map((id) => IPO_BY_ID[id])
+      .filter((rec) => (f.status === "all" || rec.status === f.status))
+      .filter((rec) => ipoMatchesCategories(rec, f.categories));
+
+    const statusChips = [
+      { id: "all", label: "All" },
+      { id: "upcoming", label: "Upcoming" },
+      { id: "priced", label: "Recent" },
+    ].map((s) => `<button type="button" class="filter-chip${f.status === s.id ? " active" : ""}" data-status="${s.id}">${s.label}</button>`).join("");
+
+    const catChips = IPO_CATEGORIES.map((c) =>
+      `<button type="button" class="filter-chip${f.categories.includes(c) ? " active" : ""}" data-cat="${c}">${c}</button>`
+    ).join("");
+
+    const cards = visible.map((rec) => {
+      const m = ipoMetrics(rec);
+      const journey = rec.status === "priced"
+        ? `<div class="ipo-journey">
+             <span class="ij-step"><span class="ij-l">IPO</span><span class="ij-v">${ipoMoney(rec.ipoPrice)}</span></span>
+             <span class="ij-arrow">→</span>
+             <span class="ij-step"><span class="ij-l">Open</span><span class="ij-v">${ipoMoney(rec.openPrice)}</span></span>
+             <span class="ij-arrow">→</span>
+             <span class="ij-step"><span class="ij-l">${rec.lastPrice != null ? "Last" : "Close"}</span><span class="ij-v">${ipoMoney(m.latest)}</span></span>
+           </div>`
+        : `<div class="ipo-journey upcoming">
+             <span class="ij-step"><span class="ij-l">Expected</span><span class="ij-v">${rec.priceRange || "TBD"}</span></span>
+             <span class="ij-step"><span class="ij-l">Offer</span><span class="ij-v">${rec.offerSize}</span></span>
+           </div>`;
+      const vsTone = m.vsIpo == null ? "" : (m.vsIpo >= 0 ? "up" : "down");
+      const foot = rec.status === "priced"
+        ? `<span class="tc-l">${rec.exchange} · ${rec.ipoDate}</span><span class="tc-arrow ${vsTone}">${ipoPctStr(m.vsIpo)} vs IPO</span>`
+        : `<span class="tc-l">${rec.exchange}</span><span class="tc-arrow">${rec.ipoDate}</span>`;
+      return `
+        <button type="button" class="thesis-card ipo-card" data-ipo="${rec.id}">
+          <div class="thesis-card-head">
+            <div class="thesis-card-badge">${rec.ticker}</div>
+            ${ipoStatusPill(rec)}
+          </div>
+          <div class="thesis-card-title">${rec.name}</div>
+          ${ipoCatTags(rec)}
+          ${journey}
+          <div class="thesis-card-foot">${foot}</div>
+        </button>`;
+    }).join("");
+
+    const upcomingCount = IPOS.filter((r) => r.status === "upcoming").length;
+    const pricedCount = IPOS.filter((r) => r.status === "priced").length;
+
+    document.getElementById("view").innerHTML = `
+      <section class="screen">
+        <div class="screen-head">
+          <div>
+            <div class="screen-title">IPO play</div>
+            <div class="screen-sub">${upcomingCount} upcoming · ${pricedCount} recent · Godel Terminal IPO calendar</div>
+          </div>
+        </div>
+
+        <div class="filter-block">
+          <div class="filter-row" id="ipo-status-row">${statusChips}</div>
+          <div class="filter-row wrap" id="ipo-cat-row">${catChips}</div>
+        </div>
+
+        ${visible.length === 0
+          ? `<div class="empty"><div class="empty-title">No IPOs match</div><div class="empty-sub">Clear a filter to see more names.</div></div>`
+          : `<div class="thesis-grid">${cards}</div>`}
+
+        <section class="movers">
+          <div class="movers-head">How to read this</div>
+          <p class="movers-copy">Recent names show the debut journey (IPO price → open → latest) and return versus the offer. Upcoming names show the expected price band and offer size. Tap any card for the full Godel-sourced dive: debut mechanics, why-it's-a-play pillars, filings timeline, risk flags, and a how-to-play verdict. Categories filter by theme; a name can carry more than one.</p>
+        </section>
+      </section>
+    `;
+    setHeader("IPO", null);
+
+    document.querySelectorAll("#ipo-status-row [data-status]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        f.status = btn.dataset.status;
+        saveStore();
+        renderIpoIndex();
+      });
+    });
+    document.querySelectorAll("#ipo-cat-row [data-cat]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const c = btn.dataset.cat;
+        if (f.categories.includes(c)) f.categories = f.categories.filter((x) => x !== c);
+        else f.categories = [...f.categories, c];
+        saveStore();
+        renderIpoIndex();
+      });
+    });
+    document.querySelectorAll("[data-ipo]").forEach((b) => {
+      b.addEventListener("click", () => navigate(`#/ipo/${b.dataset.ipo}`));
+    });
+  }
+
+  function renderIpoDetail(id) {
+    const rec = IPO_BY_ID[id];
+    if (!rec) { navigate("#/ipo", { replace: true }); return; }
+    const m = ipoMetrics(rec);
+
+    const priceStats = [];
+    if (rec.ipoPrice != null) priceStats.push({ v: ipoMoney(rec.ipoPrice), l: "IPO price" });
+    else priceStats.push({ v: rec.priceRange || "TBD", l: "Expected" });
+    priceStats.push({ v: rec.offerSize, l: "Offer size" });
+    if (rec.openPrice != null) priceStats.push({ v: ipoMoney(rec.openPrice), l: "Open" });
+    if (rec.lastPrice != null) priceStats.push({ v: ipoMoney(rec.lastPrice), l: "Last" });
+    else if (rec.closePrice != null) priceStats.push({ v: ipoMoney(rec.closePrice), l: "Debut close" });
+    if (m.vsIpo != null) priceStats.push({ v: ipoPctStr(m.vsIpo), l: "vs IPO", tone: m.vsIpo >= 0 ? "success" : "danger" });
+    else priceStats.push({ v: rec.sharesOffered, l: "Shares" });
+
+    const statCells = priceStats.map((s) => {
+      const tone = s.tone ? ` ${s.tone}` : "";
+      return `<div class="stat"><div class="val${tone}">${s.v}</div><div class="lbl">${s.l}</div></div>`;
+    }).join("");
+
+    const returnPills = [];
+    if (m.debutPop != null) returnPills.push({ label: `Debut pop ${ipoPctStr(m.debutPop)}`, tone: m.debutPop >= 0 ? "success" : "danger" });
+    if (m.dayReturn != null) returnPills.push({ label: `Day 1 ${ipoPctStr(m.dayReturn)}`, tone: m.dayReturn >= 0 ? "success" : "danger" });
+    if (m.fromOpen != null) returnPills.push({ label: `Open→close ${ipoPctStr(m.fromOpen)}`, tone: m.fromOpen >= 0 ? "success" : "danger" });
+    const pillsHtml = returnPills.length
+      ? `<div class="verdict-zones" style="margin-bottom:1.2rem">${returnPills.map((p) => `<span class="zone ${p.tone}">${p.label}</span>`).join("")}</div>`
+      : "";
+
+    const hasChart = rec.ipoPrice != null && rec.closePrice != null;
+    const chartHtml = hasChart
+      ? `<h3>Debut journey</h3>
+         <div class="chart-box"><canvas id="chart-ipo"></canvas></div>
+         <p class="caption">Y: Price ($). IPO offer → first open → debut close${rec.lastPrice != null ? " → latest" : ""}. Source: Godel IPO calendar.</p>`
+      : "";
+
+    const filingsHtml = `
+      <h3>Filings &amp; wire timeline</h3>
+      <ul class="timeline">
+        ${rec.filings.map((f) => `
+          <li class="timeline-item">
+            <div class="tl-dot"></div>
+            <div class="tl-body">
+              <div class="tl-head"><span class="tl-type">${f.type}</span><span class="tl-date">${f.date}</span></div>
+              <div class="tl-desc">${f.desc}</div>
+            </div>
+          </li>`).join("")}
+      </ul>`;
+
+    document.getElementById("view").innerHTML = `
+      <section class="screen">
+        <button type="button" class="back-btn" id="btn-back-ipo">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg>
+          All IPOs
+        </button>
+        <div class="ipo-detail-head">
+          <span class="badge">${rec.ticker} · ${rec.exchange}</span>
+          ${ipoStatusPill(rec)}
+        </div>
+        <p class="meta">${rec.status === "upcoming" ? "Expected" : "Priced"} ${rec.ipoDate} · ${rec.sharesOffered} shares · ${rec.offerSize} offer · Godel Terminal, 2026-06-01</p>
+        <h1>${rec.name}</h1>
+        ${ipoCatTags(rec)}
+        <p class="lead">${rec.lead}</p>
+
+        <div class="stats">${statCells}</div>
+        ${pillsHtml}
+
+        ${chartHtml}
+
+        <h2>Why it's a play</h2>
+        <div class="grid-2">${rec.pillars.map(renderCard).join("")}</div>
+
+        ${filingsHtml}
+
+        <h3>Risk flags</h3>
+        ${renderCallout("What could break it", rec.riskFlags, "danger")}
+
+        <div class="verdict">
+          <div class="verdict-head">How to play <span class="pill-sm info">Verdict</span></div>
+          <p>${rec.verdict}</p>
+          <div class="verdict-zones">${rec.howToPlay.map((z) => `<span class="zone ${z.tone}">${z.text}</span>`).join("")}</div>
+          <p class="footnote">User note: ${rec.note}</p>
+        </div>
+        <p class="disclaimer">Illustrative IPO scan for discussion, not investment advice. Debut mechanics from Godel Terminal IPO calendar; themes/risk flags per Reuters/TechCrunch coverage. 2026-06-01.</p>
+      </section>
+    `;
+
+    destroyCharts();
+    if (hasChart) {
+      const c = chartColors();
+      const labels = ["IPO", "Open", "Close"];
+      const data = [rec.ipoPrice, rec.openPrice, rec.closePrice];
+      if (rec.lastPrice != null) { labels.push("Last"); data.push(rec.lastPrice); }
+      makeChart("chart-ipo", {
+        type: "line",
+        data: { labels, datasets: [{ label: "Price ($)", data, borderColor: c.info, backgroundColor: "rgba(110,168,254,0.15)", fill: true, tension: 0.25, pointRadius: 4, pointBackgroundColor: c.info }] },
+        options: { plugins: { legend: { display: false } } },
+      });
+    }
+
+    document.getElementById("btn-back-ipo").addEventListener("click", () => navigate("#/ipo"));
+    setHeader(rec.ticker, null);
+  }
+
   // -------------------- Views: Alerts --------------------
   function renderAlerts() {
     document.getElementById("view").innerHTML = `
@@ -727,13 +956,17 @@
       if (r.thesisId) renderThesisDetail(r.thesisId, r.thesisView);
       else renderThesesIndex();
     }
+    else if (r.tab === "ipo") {
+      if (r.ipoId) renderIpoDetail(r.ipoId);
+      else renderIpoIndex();
+    }
     else if (r.tab === "alerts") renderAlerts();
     else if (r.tab === "settings") renderSettings();
 
     // Update Telegram back button visibility
     const tg = window.Telegram?.WebApp;
     if (tg) {
-      const inDetail = r.tab === "theses" && r.thesisId;
+      const inDetail = (r.tab === "theses" && r.thesisId) || (r.tab === "ipo" && r.ipoId);
       if (inDetail) tg.BackButton.show(); else tg.BackButton.hide();
     }
   }
@@ -764,6 +997,7 @@
     tg.BackButton.onClick(() => {
       const r = parseRoute();
       if (r.tab === "theses" && r.thesisId) navigate("#/theses");
+      else if (r.tab === "ipo" && r.ipoId) navigate("#/ipo");
       else tg.close();
     });
     if (tg.colorScheme === "light") {
