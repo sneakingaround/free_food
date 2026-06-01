@@ -31,7 +31,7 @@ jobs:
         run: |
           rm -rf docs
           mkdir -p docs
-          cp index.html styles.css app.js chip-stack.js data.js vpvr.js chart.umd.min.js .nojekyll docs/
+          cp index.html styles.css app.js chip-stack.js thesis-charts.js data.js vpvr.js chart.umd.min.js .nojekyll docs/
           cp ai-chip-stack.html ai-chip-stack-model.json ai-chip-stack-sankey.csv ai-chip-stack-crosscheck.json docs/
           cp -r market docs/
           git config user.name "github-actions[bot]"

@@ -18,7 +18,7 @@
       ]
     },
     {
-      "source": "/(chart.umd.min.js|styles.css|app.js|chip-stack.js|data.js|vpvr.js)",
+      "source": "/(chart.umd.min.js|styles.css|app.js|chip-stack.js|thesis-charts.js|data.js|vpvr.js)",
       "headers": [
         { "key": "Cache-Control", "value": "public, max-age=86400" }
       ]

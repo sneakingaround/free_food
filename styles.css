@@ -854,6 +854,18 @@ h3 { font-size: 0.78rem; font-weight: 650; letter-spacing: 0.02em; text-transfor
   min-height: 220px;
 }
 .chart-box canvas { width: 100% !important; height: 200px !important; }
+.chart-box-lg { min-height: 280px; }
+.chart-box-lg canvas { height: 260px !important; }
+.chart-box-xl { min-height: 340px; }
+.chart-box-xl canvas { height: 320px !important; }
+.chart-section-title {
+  font-size: 1.05rem; font-weight: 750; letter-spacing: -0.02em;
+  margin: 1.5rem 0 0.35rem;
+}
+.chart-section-lead {
+  font-size: 0.82rem; color: var(--muted); line-height: 1.5;
+  margin: 0 0 0.75rem;
+}
 .caption { font-size: 0.7rem; color: var(--faint); margin-bottom: 1.1rem; line-height: 1.45; }
 
 .mini-plots-section { margin: 0 0 1.6rem; }

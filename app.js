@@ -1,6 +1,6 @@
 /* global THESES, TICKER_ORDER, TICKER_LABELS, TICKER_META, DEFAULT_WATCHLIST,
    IPOS, IPO_ORDER, IPO_BY_ID, IPO_CATEGORIES, ipoMetrics, ipoMatchesCategories,
-   pt, fmtPct, weightedPT, upside, Chart, MiniPlot, ChipStack */
+   pt, fmtPct, weightedPT, upside, Chart, MiniPlot, ChipStack, ThesisCharts */
 (function () {
   // -------------------- Store --------------------
   const STORE_KEY = "ff.v1";
@@ -84,9 +84,15 @@
       text: "#e8ecf4",
     };
   }
-  function makeChart(canvasId, config) {
+  function makeChart(canvasId, config, sizeOpts) {
     const el = document.getElementById(canvasId);
     if (!el) return;
+    const box = el.closest(".chart-box");
+    if (box) {
+      box.classList.remove("chart-box-lg", "chart-box-xl");
+      if (sizeOpts?.xl) box.classList.add("chart-box-xl");
+      else if (sizeOpts?.lg) box.classList.add("chart-box-lg");
+    }
     const c = chartColors();
     const base = {
       responsive: true,
@@ -97,7 +103,10 @@
         y: { ticks: { color: c.muted, font: { size: 10 } }, grid: { color: c.grid } },
       },
     };
-    chartInstances.push(new Chart(el, { ...config, options: { ...base, ...(config.options || {}) } }));
+    const merged = { ...config.options };
+    merged.plugins = { ...base.plugins, ...(config.options?.plugins || {}) };
+    merged.scales = { ...base.scales, ...(config.options?.scales || {}) };
+    chartInstances.push(new Chart(el, { ...config, options: merged }));
   }
 
   // -------------------- Router --------------------
@@ -528,21 +537,32 @@
     return `
       <h2>Why this works — four load-bearing pillars</h2>
       <div class="grid-2">${t.pillars.map(renderCard).join("")}</div>
+
+      <h2 class="chart-section-title">10-year price &amp; earnings</h2>
+      <p class="chart-section-lead">Monthly price (up to 10y when available) with reported EPS marked at each earnings date. Quarterly actuals vs consensus below.</p>
+      <div class="chart-box chart-box-xl"><canvas id="chart-price-10y"></canvas></div>
+      <p class="caption">Green dots = reported quarterly EPS on the price path. Source: Yahoo Finance.</p>
+
+      <h3>Quarterly EPS — reported vs estimate</h3>
+      <div class="chart-box chart-box-xl"><canvas id="chart-eps-quarterly"></canvas></div>
+      <p class="caption">Gray = consensus ahead of print; green = reported. Source: Yahoo Finance earnings calendar.</p>
+
+      <h3>Annual EPS path (10y + forward)</h3>
+      <div class="chart-box chart-box-lg"><canvas id="chart-eps-annual"></canvas></div>
+      <p class="caption">Green = reported fiscal year; amber = author / consensus forward from thesis model.</p>
+
       <div class="grid-2">
         <div>
           <h3>Revenue trajectory ($B)</h3>
-          <div class="chart-box"><canvas id="chart-rev"></canvas></div>
-          <p class="caption">Y: Revenue ($B). X: Fiscal year. Source: Godel FA.</p>
+          <div class="chart-box chart-box-lg"><canvas id="chart-rev"></canvas></div>
+          <p class="caption">10 fiscal years. Source: Godel FA.</p>
         </div>
         <div>
           <h3>Margin expansion</h3>
-          <div class="chart-box"><canvas id="chart-margin"></canvas></div>
-          <p class="caption">Y: Margin (%). X: Fiscal year. Source: Godel FA.</p>
+          <div class="chart-box chart-box-lg"><canvas id="chart-margin"></canvas></div>
+          <p class="caption">Operating vs net margin (%). Source: Godel FA.</p>
         </div>
-      </div>
-      <h3>EPS path (GAAP)</h3>
-      <div class="chart-box"><canvas id="chart-eps"></canvas></div>
-      <p class="caption">Y: EPS ($). Estimates 2026+. Source: Godel EM.</p>`;
+      </div>`;
   }
   function renderValuation(t) {
     return `
@@ -581,9 +601,9 @@
         </div>
 
         <section class="mini-plots-section" aria-label="Price and volume profile">
-          <h2 class="mini-plots-heading">${TICKER_LABELS[t.id]} · Price · Volume · VPVR</h2>
+          <h2 class="mini-plots-heading">${TICKER_LABELS[t.id]} · 6mo tape · VPVR</h2>
           <div id="mini-plot-active" class="mini-plot-active"></div>
-          <p class="caption">6mo daily: candles, session volume bars, visible-range VPVR (POC + value area). Source: Yahoo Finance OHLCV.</p>
+          <p class="caption">6mo daily candles, volume, and visible-range VPVR. Long-range earnings charts are in the thesis tab below.</p>
         </section>
 
         <div class="tab-panel">${tabBody}</div>
@@ -600,26 +620,43 @@
     destroyCharts();
     const c = chartColors();
     if (view === "thesis") {
-      makeChart("chart-rev", {
-        type: "line",
-        data: { labels: t.revenueYears, datasets: [{ label: "Revenue ($B)", data: t.revenue, borderColor: c.info, backgroundColor: "rgba(110,168,254,0.15)", fill: true, tension: 0.3 }] },
-      });
-      makeChart("chart-margin", {
-        type: "line",
-        data: { labels: t.revenueYears, datasets: [
-          { label: "Operating %", data: t.opMargin, borderColor: c.success, tension: 0.3 },
-          { label: "Net %", data: t.netMargin, borderColor: c.info, tension: 0.3 },
-        ] },
-      });
-      makeChart("chart-eps", {
-        type: "bar",
-        data: { labels: t.epsYears, datasets: [{ label: "EPS ($)", data: t.eps, backgroundColor: c.success }] },
-      });
+      if (window.ThesisCharts) {
+        ThesisCharts.mount(id, t, view, { chartColors, makeChart });
+      }
+      makeChart(
+        "chart-rev",
+        {
+          type: "line",
+          data: {
+            labels: t.revenueYears,
+            datasets: [{ label: "Revenue ($B)", data: t.revenue, borderColor: c.info, backgroundColor: "rgba(110,168,254,0.15)", fill: true, tension: 0.3 }],
+          },
+        },
+        { lg: true }
+      );
+      makeChart(
+        "chart-margin",
+        {
+          type: "line",
+          data: {
+            labels: t.revenueYears,
+            datasets: [
+              { label: "Operating %", data: t.opMargin, borderColor: c.success, tension: 0.3 },
+              { label: "Net %", data: t.netMargin, borderColor: c.info, tension: 0.3 },
+            ],
+          },
+        },
+        { lg: true }
+      );
     } else {
-      makeChart("chart-pe", {
-        type: "bar",
-        data: { labels: t.fwdPeLabels, datasets: [{ label: "P/E (x)", data: t.fwdPe, backgroundColor: c.warning }] },
-      });
+      makeChart(
+        "chart-pe",
+        {
+          type: "bar",
+          data: { labels: t.fwdPeLabels, datasets: [{ label: "P/E (x)", data: t.fwdPe, backgroundColor: c.warning }] },
+        },
+        { lg: true }
+      );
     }
     if (window.MiniPlot) MiniPlot.mount(id);
 
@@ -982,7 +1019,7 @@
           <li class="settings-row">
             <div class="settings-l">
               <div class="settings-label">Market data</div>
-              <div class="settings-hint">Yahoo Finance · 6mo daily OHLCV · refreshed on each deploy via GitHub Actions.</div>
+              <div class="settings-hint">Yahoo Finance · 6mo daily + 10y monthly OHLCV · quarterly earnings · refreshed on each deploy.</div>
             </div>
           </li>
           <li class="settings-row">
