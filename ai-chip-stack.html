@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#0a0b0f" />
+  <title>AI Chip Stack — Bottleneck Map</title>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    /* Page-specific accents layered on top of the Free Food design system */
+    .stack-hero { margin-bottom: 0.4rem; }
+    .layer-head {
+      display: flex; align-items: baseline; gap: 0.55rem;
+      margin: 1.6rem 0 0.7rem;
+    }
+    .layer-num {
+      font-size: 0.72rem; font-weight: 800; letter-spacing: 0.04em;
+      color: var(--accent);
+      background: color-mix(in srgb, var(--accent) 14%, transparent);
+      border: 1px solid color-mix(in srgb, var(--accent) 30%, var(--border-soft));
+      border-radius: 7px;
+      padding: 0.15rem 0.45rem;
+      font-variant-numeric: tabular-nums;
+    }
+    .layer-title { font-size: 1.02rem; font-weight: 750; letter-spacing: -0.02em; }
+    .layer-sub { font-size: 0.72rem; color: var(--faint); margin-left: auto; }
+
+    .score-pill {
+      display: inline-flex; align-items: baseline; gap: 0.12rem;
+      font-variant-numeric: tabular-nums;
+    }
+    .score-pill b { font-size: 0.72rem; }
+
+    .priv-dot {
+      display: inline-block; width: 6px; height: 6px; border-radius: 999px;
+      background: var(--warning); margin-right: 0.35rem; vertical-align: middle;
+    }
+
+    /* Dependency flow inside the detail sheet */
+    .flow-group { margin-top: 0.5rem; }
+    .flow-label {
+      font-size: 0.68rem; font-weight: 700; letter-spacing: 0.03em;
+      text-transform: uppercase; color: var(--faint); margin-bottom: 0.4rem;
+    }
+    .flow-list { list-style: none; display: flex; flex-direction: column; gap: 0.35rem; }
+    .flow-item {
+      display: flex; align-items: center; gap: 0.55rem;
+      width: 100%; text-align: left;
+      appearance: none; cursor: pointer;
+      background: var(--surface); border: 1px solid var(--border-soft);
+      border-radius: var(--radius-sm);
+      padding: 0.5rem 0.6rem;
+      color: var(--text);
+      transition: background 0.18s var(--ease), border-color 0.18s var(--ease);
+    }
+    .flow-item:hover { background: var(--surface-2); border-color: var(--border); }
+    .flow-item[disabled] { cursor: default; opacity: 0.85; }
+    .flow-item[disabled]:hover { background: var(--surface); border-color: var(--border-soft); }
+    .flow-arrow { color: var(--faint); flex: 0 0 auto; }
+    .flow-node { font-weight: 650; letter-spacing: -0.01em; }
+    .flow-rel { font-size: 0.68rem; color: var(--faint); margin-left: auto; white-space: nowrap; }
+    .flow-w {
+      font-size: 0.62rem; font-weight: 800; font-variant-numeric: tabular-nums;
+      padding: 0.1rem 0.38rem; border-radius: 999px;
+      background: var(--surface-3); color: var(--muted);
+    }
+    .flow-w.w5 { background: color-mix(in srgb, var(--success) 18%, transparent); color: var(--success); }
+    .flow-w.w4 { background: color-mix(in srgb, var(--info) 18%, transparent); color: var(--info); }
+
+    .src-list { list-style: none; display: flex; flex-direction: column; gap: 0.3rem; }
+    .src-list a { font-size: 0.78rem; word-break: break-all; }
+
+    .sheet-tags { display: flex; flex-wrap: wrap; gap: 0.3rem; margin: 0.5rem 0 0.2rem; }
+    .conf {
+      font-size: 0.66rem; font-weight: 700; letter-spacing: 0.02em;
+      text-transform: uppercase; color: var(--faint);
+    }
+  </style>
+</head>
+<body>
+  <div id="app" class="app">
+    <header class="app-header">
+      <button type="button" id="btn-info" class="icon-btn" aria-label="Method">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5"/><path d="M12 8h.01"/></svg>
+      </button>
+      <div class="app-header-title">AI Chip Stack</div>
+      <button type="button" id="btn-top" class="icon-btn" aria-label="Top bottlenecks">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l5-5 4 4 7-9"/><path d="M14 7h5v5"/></svg>
+      </button>
+    </header>
+
+    <main id="view" class="view"></main>
+
+    <div id="sheet" class="sheet" aria-hidden="true">
+      <div class="sheet-scrim" data-close></div>
+      <div class="sheet-panel" role="dialog" aria-label="Company detail">
+        <div class="sheet-handle"></div>
+        <div class="sheet-content" id="sheet-content"></div>
+      </div>
+    </div>
+
+    <div id="toast" class="toast" aria-live="polite"></div>
+  </div>
+
+  <script>
+  (function () {
+    "use strict";
+
+    var LAYERS = [
+      { id: "demand",    label: "Demand",            sub: "Who the market sees first",        tickers: ["NVDA"] },
+      { id: "foundry",   label: "Foundry & Packaging", sub: "Where chips get built + CoWoS",   tickers: ["TSM"] },
+      { id: "memory",    label: "HBM & Memory",      sub: "The 2025 supply bottleneck",       tickers: ["000660.KS", "MU"] },
+      { id: "equipment", label: "Equipment & Metrology", sub: "Litho, etch, test, yield",       tickers: ["ASML", "KLAC", "6920.T", "6857.T", "6146.T", "LRCX", "AMAT", "8035.T", "BESI.AS", "VACN.SW"] },
+      { id: "materials", label: "Materials & Substrates", sub: "The hidden monopoly layer",    tickers: ["2802.T", "4062.T", "3037.TW", "7741.T", "4063.T", "3436.T", "6488.TWO", "ENTG", "WAF.DE", "AIQUY"] },
+      { id: "software",  label: "EDA & Software",    sub: "No tape-out without it",           tickers: ["SNPS", "CDNS"] },
+      { id: "osat",      label: "OSAT & Assembly",   sub: "Outsourced advanced packaging",    tickers: ["AMKR", "3711.TW"] },
+    ];
+
+    // Maps a company ticker -> the node names it appears as in the edge graph.
+    var NODE_ALIASES = {
+      "NVDA": ["NVIDIA"],
+      "TSM": ["TSMC", "TSMC CoWoS"],
+      "ASML": ["ASML EUV"],
+      "6857.T": ["Advantest"],
+      "6920.T": ["Lasertec"],
+      "000660.KS": ["SK hynix"],
+      "MU": ["Micron"],
+      "2802.T": ["Ajinomoto ABF", "Ajinomoto"],
+      "4062.T": ["Ibiden"],
+      "3037.TW": ["Unimicron"],
+      "7741.T": ["HOYA"],
+      "4063.T": ["Shin-Etsu Chemical"],
+      "3436.T": ["SUMCO"],
+      "6488.TWO": ["GlobalWafers"],
+      "KLAC": ["KLA"],
+      "LRCX": ["Lam Research"],
+      "AMAT": ["Applied Materials"],
+      "8035.T": ["Tokyo Electron"],
+      "6146.T": ["DISCO"],
+      "BESI.AS": ["BESI", "BE Semiconductor Industries"],
+      "VACN.SW": ["VAT Group"],
+      "SNPS": ["Synopsys"],
+      "CDNS": ["Cadence"],
+      "AMKR": ["Amkor"],
+      "3711.TW": ["ASE Technology"],
+      "WAF.DE": ["Siltronic"],
+      "AIQUY": ["Air Liquide"],
+      "ENTG": ["Entegris"],
+    };
+
+    var state = { model: null, filter: "all", byTicker: {} };
+
+    function esc(s) {
+      return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
+        return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+      });
+    }
+
+    function scoreTone(n) { return n >= 5 ? "success" : n >= 4 ? "info" : n >= 3 ? "warning" : "info"; }
+    function verdictTone(v) {
+      if (v === "interesting") return "success";
+      if (v === "maybe") return "info";
+      if (v === "supply-chain watchlist") return "warning";
+      return "danger";
+    }
+
+    function layerOf(ticker) {
+      for (var i = 0; i < LAYERS.length; i++) if (LAYERS[i].tickers.indexOf(ticker) !== -1) return LAYERS[i];
+      return null;
+    }
+
+    // -------- toast / sheet --------
+    var toastTimer;
+    function toast(msg) {
+      var el = document.getElementById("toast");
+      el.textContent = msg; el.classList.add("show");
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(function () { el.classList.remove("show"); }, 1800);
+    }
+    function openSheet(html) {
+      document.getElementById("sheet-content").innerHTML = html;
+      var s = document.getElementById("sheet");
+      s.classList.add("open"); s.setAttribute("aria-hidden", "false");
+    }
+    function closeSheet() {
+      var s = document.getElementById("sheet");
+      s.classList.remove("open"); s.setAttribute("aria-hidden", "true");
+    }
+
+    // -------- edge helpers --------
+    function aliasesFor(c) {
+      var a = NODE_ALIASES[c.ticker] ? NODE_ALIASES[c.ticker].slice() : [];
+      a.push(c.name);
+      return a;
+    }
+    function nodeMatchesCompany(node, c) {
+      var al = aliasesFor(c);
+      for (var i = 0; i < al.length; i++) if (al[i] === node) return true;
+      return false;
+    }
+    function companyForNode(node) {
+      var list = state.model.companies;
+      for (var i = 0; i < list.length; i++) if (nodeMatchesCompany(node, list[i])) return list[i];
+      return null;
+    }
+    // Convention (normalized in the model): source_node = upstream supplier/enabler,
+    // target_node = downstream consumer.
+    // upstream = what feeds this company  -> edges whose TARGET is this company (show source)
+    // downstream = what this company feeds -> edges whose SOURCE is this company (show target)
+    function edgesFor(c) {
+      var up = [], down = [];
+      state.model.sankey_edges.forEach(function (e) {
+        if (nodeMatchesCompany(e.target_node, c)) up.push(e);
+        if (nodeMatchesCompany(e.source_node, c)) down.push(e);
+      });
+      function uniq(arr) {
+        var seen = {}, out = [];
+        arr.forEach(function (e) {
+          var k = e.source_node + "|" + e.target_node + "|" + e.relationship_type;
+          if (!seen[k]) { seen[k] = 1; out.push(e); }
+        });
+        return out;
+      }
+      return { up: uniq(up), down: uniq(down) };
+    }
+
+    // -------- render --------
+    function render() {
+      var m = state.model;
+      var companies = m.companies.slice();
+      var total = companies.length;
+      var edges = m.sankey_edges.length;
+      var chokes = companies.filter(function (c) { return c.bottleneck_score >= 5; }).length;
+      var hidden = companies.filter(function (c) { return c.verdict === "supply-chain watchlist"; }).length;
+
+      var chips = [{ id: "all", label: "All" }].concat(LAYERS.map(function (l) { return { id: l.id, label: l.label }; }));
+      var chipHtml = chips.map(function (ch) {
+        return '<button type="button" class="filter-chip' + (state.filter === ch.id ? " active" : "") + '" data-filter="' + ch.id + '">' + esc(ch.label) + "</button>";
+      }).join("");
+
+      var layersToShow = state.filter === "all" ? LAYERS : LAYERS.filter(function (l) { return l.id === state.filter; });
+
+      var stackHtml = layersToShow.map(function (l, idx) {
+        var num = state.filter === "all" ? (idx + 1) : (LAYERS.indexOf(l) + 1);
+        var cards = l.tickers
+          .map(function (t) { return state.byTicker[t]; })
+          .filter(Boolean)
+          .sort(function (a, b) { return b.bottleneck_score - a.bottleneck_score; })
+          .map(cardHtml).join("");
+        return (
+          '<div class="layer-head">' +
+            '<span class="layer-num">' + String(num).padStart(2, "0") + "</span>" +
+            '<span class="layer-title">' + esc(l.label) + "</span>" +
+            '<span class="layer-sub">' + esc(l.sub) + "</span>" +
+          "</div>" +
+          '<div class="thesis-grid">' + cards + "</div>"
+        );
+      }).join("");
+
+      document.getElementById("view").innerHTML =
+        '<section class="screen">' +
+          '<div class="stack-hero">' +
+            '<span class="badge">Supply-chain map · ' + esc(m.as_of) + "</span>" +
+            "<h1>The bottlenecks behind the AI chip</h1>" +
+            '<p class="lead">' + esc(m.canonical_thesis) + "</p>" +
+            '<div class="stats">' +
+              '<div class="stat"><div class="val">' + total + '</div><div class="lbl">Companies mapped</div></div>' +
+              '<div class="stat"><div class="val">' + edges + '</div><div class="lbl">Dependency links</div></div>' +
+              '<div class="stat"><div class="val success">' + chokes + '</div><div class="lbl">5/5 choke points</div></div>' +
+              '<div class="stat"><div class="val warning">' + hidden + '</div><div class="lbl">Hidden plays</div></div>' +
+            "</div>" +
+          "</div>" +
+
+          '<div class="filter-block"><div class="filter-row wrap" id="filter-row">' + chipHtml + "</div></div>" +
+
+          stackHtml +
+
+          '<section class="movers">' +
+            '<div class="movers-head">How to read this</div>' +
+            '<p class="movers-copy">Start at <strong>Demand</strong> (the obvious name) and follow the stack down. Each card is scored 1–5 on how much of a real bottleneck it is. Tap any card for the plain-English dive, why it matters now, risk flags, sources, and the <strong>upstream/downstream flow</strong> — tap a linked node to jump across the supply chain.</p>' +
+          "</section>" +
+        "</section>";
+    }
+
+    function cardHtml(c) {
+      var st = scoreTone(c.bottleneck_score);
+      var vt = verdictTone(c.verdict);
+      var priv = isPrivateProxy(c) ? '<span class="priv-dot" title="non-US / illiquid proxy"></span>' : "";
+      return (
+        '<button type="button" class="thesis-card" data-ticker="' + esc(c.ticker) + '">' +
+          '<div class="thesis-card-head">' +
+            '<div class="thesis-card-badge">' + esc(c.ticker) + "</div>" +
+            '<span class="pill-sm ' + st + ' score-pill"><b>' + c.bottleneck_score + "</b>/5</span>" +
+          "</div>" +
+          '<div class="thesis-card-title">' + priv + esc(c.name) + "</div>" +
+          '<div class="thesis-card-meta">' + esc(c.where_in_stack) + "</div>" +
+          '<div class="cat-tags">' +
+            '<span class="cat-tag">' + esc(c.verdict) + "</span>" +
+            '<span class="cat-tag">' + esc(c.final_action) + "</span>" +
+          "</div>" +
+          '<div class="thesis-card-foot">' +
+            '<span class="tc-l">' + esc(shortExpression(c)) + "</span>" +
+            '<span class="pill-sm ' + vt + '">' + esc(c.verdict.split(" ")[0]) + "</span>" +
+          "</div>" +
+        "</button>"
+      );
+    }
+
+    function isPrivateProxy(c) {
+      return /\.(T|TW|KS|DE)$/.test(c.ticker) || c.ticker === "AIQUY";
+    }
+    function shortExpression(c) {
+      var s = c.public_market_expression || "";
+      return s.length > 46 ? s.slice(0, 45) + "…" : s;
+    }
+
+    function flowItemHtml(e, dir) {
+      // dir "up": show source_node (the supplier); dir "down": show target_node (the customer)
+      var node = dir === "up" ? e.source_node : e.target_node;
+      var linked = companyForNode(node);
+      var wClass = Number(e.estimated_weight) >= 5 ? "w5" : Number(e.estimated_weight) >= 4 ? "w4" : "";
+      var rel = String(e.relationship_type).replace(/_/g, " ");
+      var arrow = dir === "up"
+        ? '<svg class="flow-arrow" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="M11 6l-6 6 6 6"/></svg>'
+        : '<svg class="flow-arrow" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg>';
+      return (
+        "<li>" +
+          '<button type="button" class="flow-item" ' + (linked ? 'data-ticker="' + esc(linked.ticker) + '"' : "disabled") + ">" +
+            arrow +
+            '<span class="flow-node">' + esc(node) + (linked ? " · " + esc(linked.ticker) : "") + "</span>" +
+            '<span class="flow-rel">' + esc(rel) + "</span>" +
+            '<span class="flow-w ' + wClass + '">' + esc(e.estimated_weight) + "</span>" +
+          "</button>" +
+        "</li>"
+      );
+    }
+
+    function openCompany(ticker) {
+      var c = state.byTicker[ticker];
+      if (!c) return;
+      var fl = edgesFor(c);
+      var st = scoreTone(c.bottleneck_score);
+      var vt = verdictTone(c.verdict);
+      var lyr = layerOf(c.ticker);
+
+      var upHtml = fl.up.length
+        ? '<div class="flow-group"><div class="flow-label">Upstream — what feeds it</div><ul class="flow-list">' + fl.up.map(function (e) { return flowItemHtml(e, "up"); }).join("") + "</ul></div>"
+        : "";
+      var downHtml = fl.down.length
+        ? '<div class="flow-group"><div class="flow-label">Downstream — what it feeds</div><ul class="flow-list">' + fl.down.map(function (e) { return flowItemHtml(e, "down"); }).join("") + "</ul></div>"
+        : "";
+
+      openSheet(
+        '<div class="sheet-title">' + esc(c.ticker) + ' <span class="sheet-meta">· ' + esc(c.name) + "</span></div>" +
+        '<div class="sheet-tags">' +
+          '<span class="pill-sm ' + st + ' score-pill"><b>' + c.bottleneck_score + "</b>/5 bottleneck</span>" +
+          '<span class="pill-sm ' + vt + '">' + esc(c.verdict) + "</span>" +
+          '<span class="pill-sm info">' + esc(c.final_action) + "</span>" +
+          (lyr ? '<span class="cat-tag">' + esc(lyr.label) + "</span>" : "") +
+        "</div>" +
+
+        '<h3>What it actually does</h3>' +
+        '<p class="movers-copy">' + esc(c.plain_english_description) + "</p>" +
+
+        '<h3>Why it matters now</h3>' +
+        '<p class="movers-copy">' + esc(c.why_it_matters_now) + "</p>" +
+
+        '<h3>Bottleneck read</h3>' +
+        '<p class="movers-copy">' + esc(c.bottleneck_notes) + "</p>" +
+
+        upHtml + downHtml +
+
+        '<h3 style="margin-top:1.1rem">Risk flags</h3>' +
+        '<div class="callout danger"><ul>' + c.risk_flags.map(function (r) { return "<li>" + esc(r) + "</li>"; }).join("") + "</ul></div>" +
+
+        '<div class="verdict">' +
+          '<div class="verdict-head">Public-market expression <span class="pill-sm info">Verdict</span></div>' +
+          "<p>" + esc(c.public_market_expression) + "</p>" +
+          '<div class="verdict-zones"><span class="zone ' + (vt === "danger" ? "warning" : vt) + '">' + esc(c.final_action) + "</span></div>" +
+        "</div>" +
+
+        '<h3>Sources</h3>' +
+        '<ul class="src-list">' + c.key_sources.map(function (u) { return '<li><a href="' + esc(u) + '" target="_blank" rel="noopener">' + esc(u) + "</a></li>"; }).join("") + "</ul>" +
+        '<p class="sheet-note">Illustrative supply-chain research, not investment advice. Weights are 1–5 importance scores; confidence labels live in the source model. ' + esc(state.model.as_of) + ".</p>"
+      );
+    }
+
+    function openMethod() {
+      var m = state.model;
+      openSheet(
+        '<div class="sheet-title">Method <span class="sheet-meta">· how this map is built</span></div>' +
+        '<p class="sheet-sub">' + esc(m.purpose) + "</p>" +
+        '<h3>Approach</h3><p class="movers-copy">' + esc(m.method) + "</p>" +
+        '<h3>Source policy</h3><p class="movers-copy">' + esc(m.source_policy) + "</p>" +
+        '<p class="sheet-note">Model: ' + esc(m.id) + " · " + esc(m.as_of) + "</p>"
+      );
+    }
+
+    // -------- events --------
+    document.addEventListener("click", function (e) {
+      if (e.target.closest("[data-close]")) { closeSheet(); return; }
+      var f = e.target.closest("[data-filter]");
+      if (f) { state.filter = f.dataset.filter; render(); return; }
+      var t = e.target.closest("[data-ticker]");
+      if (t && t.dataset.ticker) { openCompany(t.dataset.ticker); return; }
+    });
+    document.getElementById("btn-info").addEventListener("click", openMethod);
+    document.getElementById("btn-top").addEventListener("click", function () {
+      state.filter = "all"; render();
+      document.getElementById("view").scrollTo({ top: 0, behavior: "smooth" });
+      toast("Sorted by bottleneck score");
+    });
+
+    // -------- init --------
+    fetch("ai-chip-stack-model.json")
+      .then(function (r) { return r.json(); })
+      .then(function (m) {
+        state.model = m;
+        m.companies.forEach(function (c) { state.byTicker[c.ticker] = c; });
+        render();
+      })
+      .catch(function (err) {
+        document.getElementById("view").innerHTML =
+          '<section class="screen"><div class="empty"><div class="empty-title">Could not load model</div>' +
+          '<div class="empty-sub">Serve from the repo root, then open this file:<br><code>python3 -m http.server 8765</code></div></div>' +
+          '<p class="footnote">' + esc(err.message) + "</p></section>";
+      });
+  })();
+  </script>
+</body>
+</html>

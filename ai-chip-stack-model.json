@@ -1,0 +1,1391 @@
+{
+  "id": "ai_chip_bottleneck_stack_v1",
+  "title": "AI Chip Bottleneck Stack",
+  "as_of": "2026-06-01",
+  "purpose": "Map the obvious AI chip companies to the less obvious public-market bottlenecks that make them possible.",
+  "method": "Supply-chain-first research model. Start with frontier AI accelerators, then follow foundry, packaging, memory, EDA, equipment, substrates, materials, wafers, gases, and OSAT dependencies downward and sideways.",
+  "source_policy": "Use official filings and annual reports when available; use industry research for non-disclosed dependency weights. Confidence: high = directly disclosed, medium = supported by filings/industry reports, low = inferred ecosystem logic.",
+  "canonical_thesis": "For AI chips, the market sees NVIDIA first. The bottleneck stack is TSMC advanced nodes and CoWoS, HBM supply, ABF substrates, EDA software, EUV lithography, process control/metrology, deposition/etch, specialty gases/chemicals, silicon wafers, and advanced packaging/test.",
+  "companies": [
+    {
+      "ticker": "000660.KS",
+      "name": "SK hynix",
+      "verdict": "interesting",
+      "public_market_expression": "Direct HBM bottleneck; liquid Korea listing.",
+      "plain_english_description": "Manufactures DRAM, NAND, server memory, and high-bandwidth memory used beside GPUs/AI accelerators.",
+      "where_in_stack": "HBM memory supplier.",
+      "why_it_matters_now": "HBM revenue more than doubled in 2025 and AI demand shifted memory from commodity cycle to specialized infrastructure bottleneck.",
+      "bottleneck_score": 5,
+      "bottleneck_notes": "HBM was one of the clearest AI chip constraints. SK hynix has leadership and deep NVIDIA exposure.",
+      "risk_flags": [
+        "memory cycle risk",
+        "NVIDIA/customer concentration",
+        "Korea geopolitics",
+        "capex intensity",
+        "Samsung/Micron competition"
+      ],
+      "final_action": "starter",
+      "key_sources": [
+        "https://news.skhynix.com/sk-hynix-announces-fy25-financial-results/"
+      ]
+    },
+    {
+      "ticker": "2802.T",
+      "name": "Ajinomoto",
+      "verdict": "supply-chain watchlist",
+      "public_market_expression": "Weird hidden bottleneck: MSG/food conglomerate with ABF film monopoly through Ajinomoto Fine-Techno.",
+      "plain_english_description": "Consumer food and biotech company whose subsidiary makes Ajinomoto Build-up Film, the insulating dielectric film used in advanced CPU/GPU substrates.",
+      "where_in_stack": "ABF material supplier upstream of substrate makers.",
+      "why_it_matters_now": "AI accelerators use larger, higher-layer-count substrates. ABF film demand rises faster than chip units as packages grow and layer counts rise.",
+      "bottleneck_score": 5,
+      "bottleneck_notes": "Small segment inside a conglomerate, but structurally critical. Downstream substrate makers depend on ABF allocation.",
+      "risk_flags": [
+        "segment opacity",
+        "yen/Japan exposure",
+        "small revenue contribution inside large food company",
+        "customer allocation risk"
+      ],
+      "final_action": "supply-chain watchlist",
+      "key_sources": [
+        "https://capitalblueprint.substack.com/p/ajinomoto-co-inc-deep-analysis-report",
+        "https://nikhs.substack.com/p/abf-the-material-beneath-the-model"
+      ]
+    },
+    {
+      "ticker": "6146.T",
+      "name": "DISCO",
+      "verdict": "interesting",
+      "public_market_expression": "Dicing/grinding/thinning near-monopoly for HBM and advanced packaging.",
+      "plain_english_description": "Makes precision dicing saws, grinders, polishers and consumables used to cut, thin and polish wafers and packages.",
+      "where_in_stack": "Wafer thinning / dicing / advanced packaging process equipment.",
+      "why_it_matters_now": "HBM and 2.5D/3D AI packages require more thinning, grinding and dicing steps. DISCO reported generative-AI-driven shipments and advanced packaging tailwinds.",
+      "bottleneck_score": 5,
+      "bottleneck_notes": "Razor-and-blade consumables plus high share in critical back-end process steps. Very Jamie Simons: obscure, measurable, recurring, and tied to HBM layer-count intensity.",
+      "risk_flags": [
+        "premium multiple",
+        "Japan liquidity for some accounts",
+        "semicap cycle",
+        "AI capex expectations risk"
+      ],
+      "final_action": "starter",
+      "key_sources": [
+        "https://www.disco.co.jp/eg/ir/library/doc/film/20260422.pdf",
+        "https://www.disco.co.jp/jp/ir/movie/doc/E_Tech_Briefing_2025.pdf"
+      ]
+    },
+    {
+      "ticker": "6857.T",
+      "name": "Advantest",
+      "verdict": "interesting",
+      "public_market_expression": "Direct semiconductor test bottleneck for AI accelerators, HBM and high-performance SoCs.",
+      "plain_english_description": "Makes automated test equipment for SoCs and memory. Customers use its systems to validate AI accelerators, HBM, advanced logic, and high-performance DRAM before shipment.",
+      "where_in_stack": "Semiconductor test equipment / final yield gate.",
+      "why_it_matters_now": "AI chips are bigger, hotter, multi-die, HBM-heavy and harder to validate. Advantest says AI/HPC complexity increased the need for test and drove record sales/profit.",
+      "bottleneck_score": 5,
+      "bottleneck_notes": "Testing becomes a choke point when every advanced package contains multiple chiplets and HBM stacks. Advantest reported CY2025 SoC tester share near 66% in source materials.",
+      "risk_flags": [
+        "Japan equity/liquidity for some accounts",
+        "tester capex cycle",
+        "customer concentration in AI accelerator leaders",
+        "valuation after AI rerate"
+      ],
+      "final_action": "starter",
+      "key_sources": [
+        "https://www.advantest.com/document/en/investors/ir-library/annual/E_01_IAR2025.pdf",
+        "https://www.advantest.com/document/en/investors/ir-library/result/JE_BIZ_260427_note.pdf"
+      ]
+    },
+    {
+      "ticker": "6920.T",
+      "name": "Lasertec",
+      "verdict": "interesting",
+      "public_market_expression": "EUV actinic mask inspection monopoly; one of the cleanest weird bottlenecks in semicap.",
+      "plain_english_description": "Makes actinic EUV mask inspection systems that detect printable photomask defects using EUV wavelength light.",
+      "where_in_stack": "EUV mask inspection / yield gate.",
+      "why_it_matters_now": "3nm, 2nm, High-NA EUV and HBM-related advanced nodes raise mask defect sensitivity. Sources describe Lasertec as the only commercial actinic EUV mask inspection provider.",
+      "bottleneck_score": 5,
+      "bottleneck_notes": "A true scarce capability: if EUV masks cannot be qualified, advanced-node production yield suffers. Stock had a cycle/order trough, making this one of the more interesting contrarian bottlenecks.",
+      "risk_flags": [
+        "order trough / cyclicality",
+        "high valuation history",
+        "export-control limitations",
+        "customer concentration at TSMC/Samsung/Intel and mask shops"
+      ],
+      "final_action": "starter",
+      "key_sources": [
+        "https://japan-earnings.com/earnings/2026/04/6920-lasertec-analysis-20260428/",
+        "https://uk.marketscreener.com/news/lasertec-is-beaming-straight-to-the-bank-ce7e51dcde8dfe23"
+      ]
+    },
+    {
+      "ticker": "ASML",
+      "name": "ASML Holding",
+      "verdict": "interesting",
+      "public_market_expression": "Direct lithography monopoly; expensive but structurally irreplaceable.",
+      "plain_english_description": "Makes EUV and DUV lithography tools used by advanced fabs to print tiny chip features.",
+      "where_in_stack": "Lithography equipment supplier to foundries and memory fabs.",
+      "why_it_matters_now": "Advanced AI logic and DRAM scaling need EUV. ASML states it is the world's only EUV lithography manufacturer and expects EUV revenue growth from advanced Logic and DRAM.",
+      "bottleneck_score": 5,
+      "bottleneck_notes": "True monopoly at EUV. No high-end AI chip stack scales without ASML tools, but stock often already prices quality.",
+      "risk_flags": [
+        "China export restrictions",
+        "customer concentration",
+        "cycle risk",
+        "high valuation",
+        "tool lead times"
+      ],
+      "final_action": "wait for pullback",
+      "key_sources": [
+        "https://www.sec.gov/Archives/edgar/data/937966/000162828026011377/asml-2025xannualxreportx.htm"
+      ]
+    },
+    {
+      "ticker": "KLAC",
+      "name": "KLA",
+      "verdict": "interesting",
+      "public_market_expression": "Metrology/process-control bottleneck; direct beneficiary of advanced-node and advanced-packaging complexity.",
+      "plain_english_description": "Sells inspection, metrology, process control, and yield-management systems used to find defects and improve yield in semiconductor manufacturing.",
+      "where_in_stack": "Process control/metrology equipment.",
+      "why_it_matters_now": "AI increases chip complexity, wafer value, and packaging complexity. KLA reported strong FY25 growth and advanced packaging process-control revenue exceeding $925M.",
+      "bottleneck_score": 5,
+      "bottleneck_notes": "Yield control becomes more valuable as wafers/packages get more expensive. Hard to replicate physics/data/software moat.",
+      "risk_flags": [
+        "China export controls",
+        "WFE cycle risk",
+        "foundry/memory capex concentration",
+        "high valuation"
+      ],
+      "final_action": "starter",
+      "key_sources": [
+        "https://www.sec.gov/Archives/edgar/data/319201/000119312525213412/d912971dars.pdf"
+      ]
+    },
+    {
+      "ticker": "TSM",
+      "name": "Taiwan Semiconductor Manufacturing Company",
+      "verdict": "interesting",
+      "public_market_expression": "Direct foundry and advanced packaging bottleneck.",
+      "plain_english_description": "Manufactures advanced logic chips for fabless designers and provides advanced packaging/3D stacking technologies including CoWoS, InFO, SoIC, and CPO-related platforms.",
+      "where_in_stack": "Advanced-node foundry + CoWoS advanced packaging.",
+      "why_it_matters_now": "AI accelerators require leading-edge nodes and high-end 2.5D packaging. TSMC's annual report states robust AI demand supports leading-edge, specialty, and advanced packaging demand.",
+      "bottleneck_score": 5,
+      "bottleneck_notes": "The cleanest public bottleneck: advanced-node share plus CoWoS packaging allocation. Taiwan geography creates geopolitical choke point.",
+      "risk_flags": [
+        "Taiwan geopolitical risk",
+        "earthquake/power/water risk",
+        "capex intensity",
+        "customer concentration",
+        "export-control pressure"
+      ],
+      "final_action": "starter",
+      "key_sources": [
+        "https://investor.tsmc.com/static/annualReports/2025/english/index.html"
+      ]
+    },
+    {
+      "ticker": "3037.TW",
+      "name": "Unimicron",
+      "verdict": "interesting",
+      "public_market_expression": "Taiwan ABF substrate proxy; less obvious CoWoS/AI package beneficiary.",
+      "plain_english_description": "Manufactures IC substrates and printed circuit boards, including ABF substrates used in high-performance processors and AI packages.",
+      "where_in_stack": "ABF substrate manufacturer.",
+      "why_it_matters_now": "High-layer-count AI GPU and ASIC substrates are supply constrained and tied to Taiwan's foundry/packaging ecosystem.",
+      "bottleneck_score": 4,
+      "bottleneck_notes": "Major substrate supplier, but depends on ABF film and Taiwan geography.",
+      "risk_flags": [
+        "Taiwan geopolitical risk",
+        "ABF film dependency",
+        "capex intensity",
+        "customer concentration",
+        "margin cyclicality"
+      ],
+      "final_action": "watch",
+      "key_sources": [
+        "https://www.intelmarketresearch.com/abf-substrate-market-21855"
+      ]
+    },
+    {
+      "ticker": "4062.T",
+      "name": "Ibiden",
+      "verdict": "interesting",
+      "public_market_expression": "Direct high-end ABF substrate public proxy.",
+      "plain_english_description": "Produces high-performance IC package substrates used under CPUs, GPUs, AI ASICs, and switching chips.",
+      "where_in_stack": "ABF substrate manufacturer downstream of Ajinomoto and upstream of advanced packaging/foundry flows.",
+      "why_it_matters_now": "Ibiden expects AI GPU and AI ASIC substrates to drive demand, with large/layered packages exceeding industry supply capacity.",
+      "bottleneck_score": 4,
+      "bottleneck_notes": "Substrate capacity is expensive and slow to qualify. Ibiden is a high-end supplier, but still depends on Ajinomoto ABF film.",
+      "risk_flags": [
+        "capex intensity",
+        "ABF film dependency",
+        "customer concentration",
+        "Japan manufacturing concentration",
+        "cycle risk"
+      ],
+      "final_action": "starter",
+      "key_sources": [
+        "https://www.ibiden.com/ir/items/en_kessannsetsumeiFY2025.pdf"
+      ]
+    },
+    {
+      "ticker": "4063.T",
+      "name": "Shin-Etsu Chemical",
+      "verdict": "supply-chain watchlist",
+      "public_market_expression": "Silicon wafers + EUV/photoresist/materials exposure in one Japan chemical champion.",
+      "plain_english_description": "Makes semiconductor silicon wafers and specialty chemicals/materials used by leading-edge fabs.",
+      "where_in_stack": "Wafers and specialty materials.",
+      "why_it_matters_now": "300mm wafers for advanced logic and HBM remain a foundational layer; EUV/materials supplier base is narrow.",
+      "bottleneck_score": 4,
+      "bottleneck_notes": "Boring but powerful: wafer oligopoly plus materials. Better as basket leg than single-name moonshot.",
+      "risk_flags": [
+        "materials cycle",
+        "China domestic substitution",
+        "conglomerate dilution",
+        "FX"
+      ],
+      "final_action": "watch",
+      "key_sources": [
+        "https://www.semi.org/en/semi-press-release/semi-reports-2025-annual-worldwide-silicon-wafer-shipments-and-revenue-results",
+        "https://www.meticulousresearch.com/product/extreme-ultraviolet-lithography-materials-market-6572"
+      ]
+    },
+    {
+      "ticker": "7741.T",
+      "name": "HOYA",
+      "verdict": "interesting",
+      "public_market_expression": "EUV mask blank leader hidden inside optics/healthcare conglomerate.",
+      "plain_english_description": "Produces EUV and DUV mask blanks: the ultra-flat multilayer master substrates used to make photomasks for advanced lithography.",
+      "where_in_stack": "EUV mask blank material supplier.",
+      "why_it_matters_now": "HOYA says demand for mask blanks is supported by AI, cloud, 5G and 3nm/advanced EUV miniaturization; it is developing High-NA and angstrom-generation blanks.",
+      "bottleneck_score": 4,
+      "bottleneck_notes": "Not as pure as Lasertec, but mask blanks are a narrow supplier base upstream of every EUV photomask.",
+      "risk_flags": [
+        "conglomerate dilution",
+        "multi-sourcing pressure",
+        "Japan production concentration",
+        "export controls"
+      ],
+      "final_action": "watch",
+      "key_sources": [
+        "https://www.hoya.com/ir/2025/en/review/it.html",
+        "https://www.prnewswire.com/news-releases/euv-mask-blanks-market-size-to-reach-usd-1-36-billion-by-2031--driven-by-advanced-semiconductor-lithography--valuates-reports-302645785.html"
+      ]
+    },
+    {
+      "ticker": "8035.T",
+      "name": "Tokyo Electron",
+      "verdict": "interesting",
+      "public_market_expression": "Japan WFE major across coater/developer, etch, deposition and cleaning.",
+      "plain_english_description": "Makes semiconductor production equipment used across lithography tracks, etch, deposition, cleaning and inspection-related processes.",
+      "where_in_stack": "Semiconductor process equipment.",
+      "why_it_matters_now": "AI-driven leading-edge logic and HBM capex pulls forward WFE demand; TEL is a core Japan equipment leg alongside ASML/KLA/Lam/Applied.",
+      "bottleneck_score": 4,
+      "bottleneck_notes": "Not a single-product monopoly, but essential WFE breadth with Japan supply-chain leverage.",
+      "risk_flags": [
+        "WFE cycle",
+        "China export controls",
+        "valuation",
+        "broad not pure exposure"
+      ],
+      "final_action": "watch",
+      "key_sources": [
+        "https://www.sec.gov/Archives/edgar/data/937966/000162828026011377/asml-2025xannualxreportx.htm"
+      ]
+    },
+    {
+      "ticker": "AMAT",
+      "name": "Applied Materials",
+      "verdict": "interesting",
+      "public_market_expression": "Broadest semiconductor equipment/tooling proxy.",
+      "plain_english_description": "Sells materials engineering equipment for deposition, etch, ion implant, CMP, inspection, and advanced packaging.",
+      "where_in_stack": "Semiconductor manufacturing equipment.",
+      "why_it_matters_now": "AI drives foundry logic, DRAM, and advanced packaging spend, the three areas Applied says account for most incremental WFE.",
+      "bottleneck_score": 4,
+      "bottleneck_notes": "Broad exposure, less pure than ASML/KLA but deeply embedded across manufacturing inflections.",
+      "risk_flags": [
+        "WFE cycle",
+        "China controls",
+        "broad but less pure exposure",
+        "customer capex timing"
+      ],
+      "final_action": "watch",
+      "key_sources": [
+        "https://www.tikr.com/blog/applied-materials-30-systems-outlook-is-the-headline-the-services-business-may-be-the-better-story"
+      ]
+    },
+    {
+      "ticker": "BESI.AS",
+      "name": "BE Semiconductor Industries",
+      "verdict": "interesting",
+      "public_market_expression": "Hybrid bonding / advanced assembly equipment pure play.",
+      "plain_english_description": "Makes semiconductor assembly equipment, including die attach, thermo-compression and hybrid bonding systems for advanced packaging.",
+      "where_in_stack": "Hybrid bonding / advanced packaging equipment.",
+      "why_it_matters_now": "Hybrid bonding enables denser chiplet and 3D architectures with direct copper interconnects. Besi says hybrid bonding is central to generative AI device assembly.",
+      "bottleneck_score": 4,
+      "bottleneck_notes": "High-upside packaging inflection: more speculative than ASML/KLA but cleaner exposure to next-gen chiplet bonding.",
+      "risk_flags": [
+        "small cap vs semicap majors",
+        "order volatility",
+        "customer concentration",
+        "hybrid bonding adoption timing"
+      ],
+      "final_action": "watch",
+      "key_sources": [
+        "https://www.marketscreener.com/news/be-semiconductor-industries-n-annual-report-2025-ce7e5cdcdd8bf026",
+        "https://www.besi.com/investor-relations/press-releases/details/be-semiconductor-industries-nv-announces-q4-25-and-full-year-2025-results/"
+      ]
+    },
+    {
+      "ticker": "CDNS",
+      "name": "Cadence Design Systems",
+      "verdict": "supply-chain watchlist",
+      "public_market_expression": "EDA/software dependency and hyperscaler custom-silicon enabler.",
+      "plain_english_description": "Provides computational software, EDA, hardware emulation, IP, and AI-driven design tools used to design and verify chips and electronic systems.",
+      "where_in_stack": "EDA/software-to-designer layer.",
+      "why_it_matters_now": "Systems companies and hyperscalers are increasingly designing ASICs; Cadence disclosed customers include semiconductor and systems companies and integrates agentic/generative AI in design flows.",
+      "bottleneck_score": 4,
+      "bottleneck_notes": "One of two dominant EDA vendors; benefits from custom AI ASIC proliferation.",
+      "risk_flags": [
+        "valuation",
+        "large-customer negotiation",
+        "EDA competition",
+        "AI tool cannibalization vs uplift uncertainty"
+      ],
+      "final_action": "watch",
+      "key_sources": [
+        "https://www.marketscreener.com/news/cadence-design-annual-report-for-fiscal-year-ending-december-31-2025-form-10-k-ce7e5ddcd98af023"
+      ]
+    },
+    {
+      "ticker": "ENTG",
+      "name": "Entegris",
+      "verdict": "supply-chain watchlist",
+      "public_market_expression": "Advanced materials, filtration, purification, and wafer-handling proxy.",
+      "plain_english_description": "Supplies materials, filtration, purification, fluid handling, and contamination-control products to semiconductor manufacturing.",
+      "where_in_stack": "Specialty materials / ultra-clean delivery / filtration.",
+      "why_it_matters_now": "EUV/high-NA scaling and metal-oxide resists require ultra-clean precursors, filtration, handling, and delivery systems.",
+      "bottleneck_score": 4,
+      "bottleneck_notes": "Contamination-control bottleneck: low-profile but essential as defect tolerances tighten.",
+      "risk_flags": [
+        "semicap cycle",
+        "debt/acquisition integration",
+        "customer capex timing",
+        "materials qualification risk"
+      ],
+      "final_action": "watch",
+      "key_sources": [
+        "https://markets.financialcontent.com/stocks/article/bizwire-2026-5-26-entegris-and-jsr-corporationinpria-corporation-announce-non-exclusive-cross-licensing-to-euv-lithography"
+      ]
+    },
+    {
+      "ticker": "LRCX",
+      "name": "Lam Research",
+      "verdict": "interesting",
+      "public_market_expression": "Deposition/etch and advanced packaging equipment proxy.",
+      "plain_english_description": "Sells etch, deposition, plating, and related wafer-processing equipment used in logic, memory, and advanced packaging.",
+      "where_in_stack": "Semiconductor process equipment.",
+      "why_it_matters_now": "Lam says AI is driving new device architectures and packaging approaches that are increasingly deposition- and etch-intensive.",
+      "bottleneck_score": 4,
+      "bottleneck_notes": "Not monopoly like ASML, but core process steps become more intensive with GAA, backside power, DRAM, NAND, and packaging.",
+      "risk_flags": [
+        "China export controls",
+        "memory capex cycle",
+        "customer concentration",
+        "WFE downturn risk"
+      ],
+      "final_action": "watch",
+      "key_sources": [
+        "https://filecache.investorroom.com/mr5ir_lamresearch2/1461/LAM%2BRESEARCH%2BCORP_BOOKMARKS_2025_V1.pdf"
+      ]
+    },
+    {
+      "ticker": "MU",
+      "name": "Micron Technology",
+      "verdict": "maybe",
+      "public_market_expression": "Liquid U.S. HBM/server memory proxy.",
+      "plain_english_description": "Manufactures DRAM, NAND, and HBM used in AI servers and accelerators.",
+      "where_in_stack": "HBM and server memory supplier.",
+      "why_it_matters_now": "NVIDIA's 10-K explicitly names Micron as one of its memory suppliers. HBM supply tightness lifts AI memory economics.",
+      "bottleneck_score": 4,
+      "bottleneck_notes": "HBM is a true bottleneck, but Micron trails SK hynix in leading HBM share.",
+      "risk_flags": [
+        "memory cycle",
+        "HBM execution risk",
+        "customer concentration",
+        "capex intensity"
+      ],
+      "final_action": "watch",
+      "key_sources": [
+        "https://s201.q4cdn.com/141608511/files/doc_financials/2025/q4/177440d5-3b32-4185-8cc8-95500a9dc783.pdf"
+      ]
+    },
+    {
+      "ticker": "NVDA",
+      "name": "NVIDIA",
+      "verdict": "interesting",
+      "public_market_expression": "Direct AI accelerator leader; better used as the obvious demand source than the hidden bottleneck.",
+      "plain_english_description": "Designs GPUs, networking, systems, and AI software stacks. Sells AI accelerators and data-center-scale platforms to hyperscalers, cloud providers, enterprises, and sovereign AI buyers.",
+      "where_in_stack": "AI accelerator designer / platform owner.",
+      "why_it_matters_now": "NVIDIA's Data Center platform is the largest demand engine for advanced-node wafers, CoWoS packaging, HBM, substrates, EDA, assembly/test, and data-center power.",
+      "bottleneck_score": 4,
+      "bottleneck_notes": "NVIDIA controls demand and architecture, but depends on bottlenecks it does not fully own: TSMC, CoWoS, HBM, ABF substrates, and assembly/test.",
+      "risk_flags": [
+        "customer concentration",
+        "export-control risk",
+        "TSMC dependency",
+        "HBM dependency",
+        "CoWoS dependency",
+        "long manufacturing lead times"
+      ],
+      "final_action": "map supply chain deeper",
+      "key_sources": [
+        "https://s201.q4cdn.com/141608511/files/doc_financials/2025/q4/177440d5-3b32-4185-8cc8-95500a9dc783.pdf"
+      ]
+    },
+    {
+      "ticker": "SNPS",
+      "name": "Synopsys",
+      "verdict": "supply-chain watchlist",
+      "public_market_expression": "EDA/software dependency for every advanced AI chip design.",
+      "plain_english_description": "Provides electronic design automation software, semiconductor IP, verification, simulation, and now broader multiphysics/design tools after Ansys.",
+      "where_in_stack": "EDA/software-to-designer layer.",
+      "why_it_matters_now": "Advanced AI chips and hyperscaler custom ASICs raise design complexity, verification demand, IP needs, and tool spend.",
+      "bottleneck_score": 4,
+      "bottleneck_notes": "Design cannot tape out without EDA, but customers often use multiple vendors and switching happens over long cycles.",
+      "risk_flags": [
+        "valuation",
+        "integration risk",
+        "customer budget cycles",
+        "China restrictions"
+      ],
+      "final_action": "watch",
+      "key_sources": [
+        "https://newsletter.semianalysis.com/p/eda-market-primer"
+      ]
+    },
+    {
+      "ticker": "VACN.SW",
+      "name": "VAT Group",
+      "verdict": "interesting",
+      "public_market_expression": "Vacuum valve hidden bottleneck for semicap tools and vacuum-intensive leading-edge processes.",
+      "plain_english_description": "Makes high-end vacuum valves, modules and adjacencies used inside semiconductor manufacturing tools.",
+      "where_in_stack": "Vacuum subsystem supplier to WFE tools.",
+      "why_it_matters_now": "Leading-edge logic, GAA, HBM and advanced memory are vacuum-intensive. VAT says AI-led semicap ramp supports demand and claims >70% high-end vacuum valve share.",
+      "bottleneck_score": 4,
+      "bottleneck_notes": "Supplier-of-suppliers play: not bought by NVIDIA, but embedded inside the tools that TSMC/Samsung/Intel/SK hynix need.",
+      "risk_flags": [
+        "Swiss listing/liquidity",
+        "semicap order cycle",
+        "tool OEM concentration",
+        "China exposure"
+      ],
+      "final_action": "watch",
+      "key_sources": [
+        "https://www.vatgroup.com/news/vat-medienmitteilung-zum-jahresabschluss-2025",
+        "https://www.vatgroup.com/investor-relations/annual-report/letter-to-stakeholders"
+      ]
+    },
+    {
+      "ticker": "3436.T",
+      "name": "SUMCO",
+      "verdict": "maybe",
+      "public_market_expression": "Pure silicon wafer oligopoly proxy.",
+      "plain_english_description": "Supplies silicon wafers used as the starting substrate for semiconductor manufacturing.",
+      "where_in_stack": "Silicon wafer supplier.",
+      "why_it_matters_now": "SEMI says 300mm wafers for AI-driven logic and HBM are strong even while mature-node recovery is slower.",
+      "bottleneck_score": 3,
+      "bottleneck_notes": "Important but more cyclical/commodity-like than ABF, HBM, EUV or test.",
+      "risk_flags": [
+        "wafer pricing cycle",
+        "China substitution",
+        "capacity utilization",
+        "not a pure AI play"
+      ],
+      "final_action": "watch",
+      "key_sources": [
+        "https://www.semi.org/en/semi-press-release/semi-reports-2025-annual-worldwide-silicon-wafer-shipments-and-revenue-results"
+      ]
+    },
+    {
+      "ticker": "3711.TW",
+      "name": "ASE Technology",
+      "verdict": "maybe",
+      "public_market_expression": "Largest OSAT / advanced packaging beneficiary if TSMC outsources more CoWoS-adjacent volume.",
+      "plain_english_description": "Provides outsourced semiconductor assembly, test, and advanced packaging services.",
+      "where_in_stack": "OSAT / packaging and test.",
+      "why_it_matters_now": "Industry reports indicate ASE may absorb lower-end/outsourced advanced packaging as TSMC preserves internal high-end capacity.",
+      "bottleneck_score": 3,
+      "bottleneck_notes": "Biggest OSAT scale, but still downstream of TSMC's proprietary CoWoS choke point.",
+      "risk_flags": [
+        "Taiwan exposure",
+        "OSAT margin pressure",
+        "customer concentration",
+        "outsourcing timing uncertainty"
+      ],
+      "final_action": "watch",
+      "key_sources": [
+        "https://www.eetimes.com/chip-assembler-ase-sees-advanced-packaging-sales-doubling/"
+      ]
+    },
+    {
+      "ticker": "6488.TWO",
+      "name": "GlobalWafers",
+      "verdict": "maybe",
+      "public_market_expression": "Taiwan silicon wafer proxy; Yahoo symbol corrected to 6488.TWO.",
+      "plain_english_description": "Manufactures semiconductor wafers for logic, memory and specialty semiconductor applications.",
+      "where_in_stack": "Silicon wafer supplier.",
+      "why_it_matters_now": "Advanced logic/cloud/HBM wafer demand supports the wafer oligopoly; Taiwan location ties it closely to the foundry ecosystem.",
+      "bottleneck_score": 3,
+      "bottleneck_notes": "Useful regional wafer proxy, but not the highest-alpha bottleneck versus Ajinomoto/Lasertec/DISCO/Advantest.",
+      "risk_flags": [
+        "Yahoo ticker hygiene",
+        "Taiwan geopolitical risk",
+        "wafer cycle",
+        "China substitution"
+      ],
+      "final_action": "watch",
+      "key_sources": [
+        "https://www.semi.org/en/taxonomy/term/45726"
+      ]
+    },
+    {
+      "ticker": "AIQUY",
+      "name": "Air Liquide",
+      "verdict": "supply-chain watchlist",
+      "public_market_expression": "Specialty gases / ultra-high-purity gases / precursors proxy.",
+      "plain_english_description": "Supplies industrial and specialty gases, ultra-high-purity gases, and advanced materials to semiconductor fabs.",
+      "where_in_stack": "Specialty gases and precursors.",
+      "why_it_matters_now": "Air Liquide's 2025 reports cite semiconductor gas contracts, ultra-pure gas plants, neon/argon, and molybdenum-based precursors for next-generation semiconductors.",
+      "bottleneck_score": 3,
+      "bottleneck_notes": "Hidden enabler, but semiconductor exposure is diluted inside a broad industrial gas company.",
+      "risk_flags": [
+        "conglomerate dilution",
+        "contract timing",
+        "energy/input costs",
+        "regional capex cycles"
+      ],
+      "final_action": "supply-chain watchlist",
+      "key_sources": [
+        "https://www.airliquide.com/sites/airliquide.com/files/2026-02/air-liquide-pr-fy-2025-with-record-performance-and-confident-in-its-transformation-dynamic-air-liquide-confirms-its-growth-outlook.pdf"
+      ]
+    },
+    {
+      "ticker": "AMKR",
+      "name": "Amkor Technology",
+      "verdict": "maybe",
+      "public_market_expression": "U.S.-listed OSAT/advanced packaging proxy.",
+      "plain_english_description": "Provides outsourced semiconductor assembly, advanced packaging, wafer-level processing, and test services.",
+      "where_in_stack": "OSAT / packaging and test.",
+      "why_it_matters_now": "Advanced packaging is no longer back-end commodity work; it is a bottleneck for AI accelerator yield, integration, and throughput.",
+      "bottleneck_score": 3,
+      "bottleneck_notes": "Useful liquid U.S. proxy, but high-end CoWoS remains TSMC-led. Amkor benefits if advanced packaging outsourcing grows.",
+      "risk_flags": [
+        "margin cyclicality",
+        "competition from ASE/JCET/Powertech",
+        "customer concentration",
+        "capex intensity"
+      ],
+      "final_action": "watch",
+      "key_sources": [
+        "https://www.sec.gov/Archives/edgar/data/1047127/000119312526140294/d94485dars.pdf"
+      ]
+    },
+    {
+      "ticker": "WAF.DE",
+      "name": "Siltronic",
+      "verdict": "supply-chain watchlist",
+      "public_market_expression": "Silicon wafer bottleneck proxy.",
+      "plain_english_description": "Produces polished, epitaxial, and specialty silicon wafers used as the starting substrate for chips.",
+      "where_in_stack": "Upstream wafer substrate supplier.",
+      "why_it_matters_now": "SEMI says advanced logic and HBM support strong 300mm wafer demand; Siltronic states AI raises silicon demand per application.",
+      "bottleneck_score": 3,
+      "bottleneck_notes": "Oligopoly layer; not as acute as CoWoS/HBM but foundational and geopolitically relevant.",
+      "risk_flags": [
+        "commodity cycle",
+        "pricing pressure",
+        "China domestic wafer push",
+        "capacity utilization"
+      ],
+      "final_action": "watch",
+      "key_sources": [
+        "https://www.siltronic.com/fileadmin/investorrelations/2025/Q4/260312_Siltronic_Annual_Report_2025_safe.pdf"
+      ]
+    }
+  ],
+  "sankey_columns": [
+    "source_node",
+    "target_node",
+    "relationship_type",
+    "estimated_weight",
+    "weight_basis",
+    "public_or_private",
+    "ticker_if_public",
+    "geography",
+    "confidence",
+    "source_url",
+    "notes"
+  ],
+  "sankey_edges": [
+    {
+      "source_node": "TSMC",
+      "target_node": "NVIDIA",
+      "relationship_type": "foundry_to_designer",
+      "estimated_weight": 5,
+      "weight_basis": "qualitative importance score 1-5",
+      "public_or_private": "public",
+      "ticker_if_public": "TSM",
+      "geography": "Taiwan / US",
+      "confidence": "high",
+      "source_url": "https://s201.q4cdn.com/141608511/files/doc_financials/2025/q4/177440d5-3b32-4185-8cc8-95500a9dc783.pdf",
+      "notes": "NVIDIA 10-K names TSMC and Samsung as wafer foundries; TSMC is dominant for advanced AI accelerators."
+    },
+    {
+      "source_node": "Samsung Electronics",
+      "target_node": "NVIDIA",
+      "relationship_type": "foundry_to_designer",
+      "estimated_weight": 2,
+      "weight_basis": "qualitative importance score 1-5",
+      "public_or_private": "public",
+      "ticker_if_public": "005930.KS",
+      "geography": "South Korea",
+      "confidence": "high",
+      "source_url": "https://s201.q4cdn.com/141608511/files/doc_financials/2025/q4/177440d5-3b32-4185-8cc8-95500a9dc783.pdf",
+      "notes": "Named as NVIDIA foundry and memory supplier, but less central than TSMC for leading AI GPUs."
+    },
+    {
+      "source_node": "SK hynix",
+      "target_node": "NVIDIA",
+      "relationship_type": "supplier_to_company",
+      "estimated_weight": 5,
+      "weight_basis": "qualitative importance score 1-5",
+      "public_or_private": "public",
+      "ticker_if_public": "000660.KS",
+      "geography": "South Korea",
+      "confidence": "high",
+      "source_url": "https://s201.q4cdn.com/141608511/files/doc_financials/2025/q4/177440d5-3b32-4185-8cc8-95500a9dc783.pdf",
+      "notes": "NVIDIA 10-K names SK hynix as a memory supplier; HBM is a primary AI chip bottleneck."
+    },
+    {
+      "source_node": "Micron",
+      "target_node": "NVIDIA",
+      "relationship_type": "supplier_to_company",
+      "estimated_weight": 4,
+      "weight_basis": "qualitative importance score 1-5",
+      "public_or_private": "public",
+      "ticker_if_public": "MU",
+      "geography": "US",
+      "confidence": "high",
+      "source_url": "https://s201.q4cdn.com/141608511/files/doc_financials/2025/q4/177440d5-3b32-4185-8cc8-95500a9dc783.pdf",
+      "notes": "Named NVIDIA memory supplier; liquid U.S. HBM/server memory proxy."
+    },
+    {
+      "source_node": "Samsung Electronics Memory",
+      "target_node": "NVIDIA",
+      "relationship_type": "supplier_to_company",
+      "estimated_weight": 3,
+      "weight_basis": "qualitative importance score 1-5",
+      "public_or_private": "public",
+      "ticker_if_public": "005930.KS",
+      "geography": "South Korea",
+      "confidence": "high",
+      "source_url": "https://s201.q4cdn.com/141608511/files/doc_financials/2025/q4/177440d5-3b32-4185-8cc8-95500a9dc783.pdf",
+      "notes": "Named as NVIDIA memory supplier; HBM catch-up competitor."
+    },
+    {
+      "source_node": "TSMC CoWoS",
+      "target_node": "NVIDIA",
+      "relationship_type": "packaging_to_chipmaker",
+      "estimated_weight": 5,
+      "weight_basis": "qualitative importance score 1-5",
+      "public_or_private": "public",
+      "ticker_if_public": "TSM",
+      "geography": "Taiwan",
+      "confidence": "high",
+      "source_url": "https://s201.q4cdn.com/141608511/files/doc_financials/2025/q4/177440d5-3b32-4185-8cc8-95500a9dc783.pdf",
+      "notes": "NVIDIA explicitly says it utilizes CoWoS technology for semiconductor packaging."
+    },
+    {
+      "source_node": "TSMC CoWoS",
+      "target_node": "AMD",
+      "relationship_type": "packaging_to_chipmaker",
+      "estimated_weight": 4,
+      "weight_basis": "inferred dependency",
+      "public_or_private": "public",
+      "ticker_if_public": "TSM",
+      "geography": "Taiwan",
+      "confidence": "medium",
+      "source_url": "https://epoch.ai/data-insights/ai-chip-supply-chain-constraints",
+      "notes": "High-end AMD AI accelerators compete for advanced packaging/HBM capacity."
+    },
+    {
+      "source_node": "TSMC CoWoS",
+      "target_node": "Broadcom",
+      "relationship_type": "packaging_to_chipmaker",
+      "estimated_weight": 4,
+      "weight_basis": "inferred dependency",
+      "public_or_private": "public",
+      "ticker_if_public": "TSM",
+      "geography": "Taiwan",
+      "confidence": "medium",
+      "source_url": "https://news.futunn.com/en/post/66073763/taiwan-semiconductor-s-monthly-production-of-cowos-is-projected-to",
+      "notes": "Broadcom custom AI ASIC programs for hyperscalers are a major CoWoS demand source."
+    },
+    {
+      "source_node": "Broadcom",
+      "target_node": "Google TPU / hyperscaler ASICs",
+      "relationship_type": "company_to_customer",
+      "estimated_weight": 4,
+      "weight_basis": "inferred dependency",
+      "public_or_private": "public",
+      "ticker_if_public": "AVGO",
+      "geography": "US",
+      "confidence": "medium",
+      "source_url": "https://newsletter.semianalysis.com/p/eda-market-primer",
+      "notes": "Hyperscaler custom silicon is a major AI ASIC demand vector; Broadcom is a public custom silicon proxy."
+    },
+    {
+      "source_node": "ASML EUV",
+      "target_node": "TSMC",
+      "relationship_type": "equipment_to_manufacturer",
+      "estimated_weight": 5,
+      "weight_basis": "qualitative importance score 1-5",
+      "public_or_private": "public",
+      "ticker_if_public": "ASML",
+      "geography": "Netherlands",
+      "confidence": "high",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/937966/000162828026011377/asml-2025xannualxreportx.htm",
+      "notes": "ASML is the only EUV lithography supplier; advanced logic/DRAM scaling depends on EUV."
+    },
+    {
+      "source_node": "KLA",
+      "target_node": "TSMC",
+      "relationship_type": "equipment_to_manufacturer",
+      "estimated_weight": 5,
+      "weight_basis": "qualitative importance score 1-5",
+      "public_or_private": "public",
+      "ticker_if_public": "KLAC",
+      "geography": "US",
+      "confidence": "medium",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/319201/000119312525213412/d912971dars.pdf",
+      "notes": "Process control and metrology become more critical as advanced-node and advanced-packaging yield complexity rises."
+    },
+    {
+      "source_node": "Applied Materials",
+      "target_node": "TSMC",
+      "relationship_type": "equipment_to_manufacturer",
+      "estimated_weight": 4,
+      "weight_basis": "qualitative importance score 1-5",
+      "public_or_private": "public",
+      "ticker_if_public": "AMAT",
+      "geography": "US",
+      "confidence": "medium",
+      "source_url": "https://www.tikr.com/blog/applied-materials-30-systems-outlook-is-the-headline-the-services-business-may-be-the-better-story",
+      "notes": "Broad materials engineering exposure across foundry logic, DRAM, and advanced packaging."
+    },
+    {
+      "source_node": "Lam Research",
+      "target_node": "TSMC",
+      "relationship_type": "equipment_to_manufacturer",
+      "estimated_weight": 4,
+      "weight_basis": "qualitative importance score 1-5",
+      "public_or_private": "public",
+      "ticker_if_public": "LRCX",
+      "geography": "US",
+      "confidence": "medium",
+      "source_url": "https://filecache.investorroom.com/mr5ir_lamresearch2/1461/LAM%2BRESEARCH%2BCORP_BOOKMARKS_2025_V1.pdf",
+      "notes": "Deposition/etch intensity rises with GAA, backside power, DRAM scaling, and advanced packaging."
+    },
+    {
+      "source_node": "Tokyo Electron",
+      "target_node": "TSMC",
+      "relationship_type": "equipment_to_manufacturer",
+      "estimated_weight": 3,
+      "weight_basis": "qualitative importance score 1-5",
+      "public_or_private": "public",
+      "ticker_if_public": "8035.T",
+      "geography": "Japan",
+      "confidence": "medium",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/937966/000162828026011377/asml-2025xannualxreportx.htm",
+      "notes": "Major Japan WFE supplier; include for semicap basket even though this v1 model did not source TEL filings directly."
+    },
+    {
+      "source_node": "Ajinomoto ABF",
+      "target_node": "AI Accelerator Package",
+      "relationship_type": "material_to_supplier",
+      "estimated_weight": 5,
+      "weight_basis": "qualitative importance score 1-5",
+      "public_or_private": "public",
+      "ticker_if_public": "2802.T",
+      "geography": "Japan",
+      "confidence": "medium",
+      "source_url": "https://capitalblueprint.substack.com/p/ajinomoto-co-inc-deep-analysis-report",
+      "notes": "ABF film is the weird hidden bottleneck beneath advanced CPU/GPU substrates."
+    },
+    {
+      "source_node": "Ajinomoto ABF",
+      "target_node": "Ibiden",
+      "relationship_type": "supplier_to_company",
+      "estimated_weight": 5,
+      "weight_basis": "qualitative importance score 1-5",
+      "public_or_private": "public",
+      "ticker_if_public": "4062.T",
+      "geography": "Japan",
+      "confidence": "medium",
+      "source_url": "https://nikhs.substack.com/p/ibiden-the-hidden-bottleneck-beneath",
+      "notes": "Ibiden is a high-end ABF substrate maker; downstream capacity depends on ABF film allocation."
+    },
+    {
+      "source_node": "Ajinomoto ABF",
+      "target_node": "Unimicron",
+      "relationship_type": "supplier_to_company",
+      "estimated_weight": 4,
+      "weight_basis": "qualitative importance score 1-5",
+      "public_or_private": "public",
+      "ticker_if_public": "3037.TW",
+      "geography": "Taiwan",
+      "confidence": "medium",
+      "source_url": "https://www.intelmarketresearch.com/abf-substrate-market-21855",
+      "notes": "Unimicron is a major ABF substrate supplier tied to AI package demand."
+    },
+    {
+      "source_node": "Ajinomoto ABF",
+      "target_node": "Shinko Electric",
+      "relationship_type": "supplier_to_company",
+      "estimated_weight": 3,
+      "weight_basis": "qualitative importance score 1-5",
+      "public_or_private": "public",
+      "ticker_if_public": "6967.T",
+      "geography": "Japan",
+      "confidence": "medium",
+      "source_url": "https://www.intelmarketresearch.com/abf-substrate-market-21855",
+      "notes": "High-density substrate exposure; liquidity/corporate actions should be checked before trading."
+    },
+    {
+      "source_node": "Ibiden",
+      "target_node": "TSMC CoWoS",
+      "relationship_type": "supplier_to_company",
+      "estimated_weight": 4,
+      "weight_basis": "inferred dependency",
+      "public_or_private": "public",
+      "ticker_if_public": "TSM",
+      "geography": "Japan / Taiwan",
+      "confidence": "medium",
+      "source_url": "https://www.ibiden.com/ir/items/en_kessannsetsumeiFY2025.pdf",
+      "notes": "High-performance substrates feed AI GPU/ASIC packaging flows."
+    },
+    {
+      "source_node": "Unimicron",
+      "target_node": "TSMC CoWoS",
+      "relationship_type": "supplier_to_company",
+      "estimated_weight": 4,
+      "weight_basis": "inferred dependency",
+      "public_or_private": "public",
+      "ticker_if_public": "TSM",
+      "geography": "Taiwan",
+      "confidence": "medium",
+      "source_url": "https://www.intelmarketresearch.com/abf-substrate-market-21855",
+      "notes": "Taiwan substrate ecosystem ties into foundry/OSAT advanced packaging flows."
+    },
+    {
+      "source_node": "ASE Technology",
+      "target_node": "TSMC CoWoS",
+      "relationship_type": "packaging_to_chipmaker",
+      "estimated_weight": 3,
+      "weight_basis": "inferred dependency",
+      "public_or_private": "public",
+      "ticker_if_public": "3711.TW",
+      "geography": "Taiwan",
+      "confidence": "medium",
+      "source_url": "https://www.eetimes.com/chip-assembler-ase-sees-advanced-packaging-sales-doubling/",
+      "notes": "ASE may absorb outsourced/less complex advanced packaging as TSMC capacity remains tight."
+    },
+    {
+      "source_node": "Amkor",
+      "target_node": "TSMC CoWoS",
+      "relationship_type": "packaging_to_chipmaker",
+      "estimated_weight": 2,
+      "weight_basis": "inferred dependency",
+      "public_or_private": "public",
+      "ticker_if_public": "AMKR",
+      "geography": "US / Asia",
+      "confidence": "medium",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/1047127/000119312526140294/d94485dars.pdf",
+      "notes": "Amkor is a liquid U.S.-listed OSAT/advanced packaging proxy."
+    },
+    {
+      "source_node": "Hon Hai Precision / Foxconn",
+      "target_node": "NVIDIA",
+      "relationship_type": "supplier_to_company",
+      "estimated_weight": 4,
+      "weight_basis": "qualitative importance score 1-5",
+      "public_or_private": "public",
+      "ticker_if_public": "2317.TW",
+      "geography": "Taiwan",
+      "confidence": "high",
+      "source_url": "https://s201.q4cdn.com/141608511/files/doc_financials/2025/q4/177440d5-3b32-4185-8cc8-95500a9dc783.pdf",
+      "notes": "NVIDIA names Hon Hai as assembly/test/packaging final-products partner."
+    },
+    {
+      "source_node": "Wistron",
+      "target_node": "NVIDIA",
+      "relationship_type": "supplier_to_company",
+      "estimated_weight": 3,
+      "weight_basis": "qualitative importance score 1-5",
+      "public_or_private": "public",
+      "ticker_if_public": "3231.TW",
+      "geography": "Taiwan",
+      "confidence": "high",
+      "source_url": "https://s201.q4cdn.com/141608511/files/doc_financials/2025/q4/177440d5-3b32-4185-8cc8-95500a9dc783.pdf",
+      "notes": "NVIDIA names Wistron as assembly/test/packaging final-products partner."
+    },
+    {
+      "source_node": "Fabrinet",
+      "target_node": "NVIDIA",
+      "relationship_type": "supplier_to_company",
+      "estimated_weight": 3,
+      "weight_basis": "qualitative importance score 1-5",
+      "public_or_private": "public",
+      "ticker_if_public": "FN",
+      "geography": "Thailand / US",
+      "confidence": "high",
+      "source_url": "https://s201.q4cdn.com/141608511/files/doc_financials/2025/q4/177440d5-3b32-4185-8cc8-95500a9dc783.pdf",
+      "notes": "NVIDIA names Fabrinet as assembly/test/packaging final-products partner; also optical manufacturing adjacency."
+    },
+    {
+      "source_node": "Synopsys",
+      "target_node": "NVIDIA",
+      "relationship_type": "software_to_designer",
+      "estimated_weight": 4,
+      "weight_basis": "inferred dependency",
+      "public_or_private": "public",
+      "ticker_if_public": "SNPS",
+      "geography": "US",
+      "confidence": "medium",
+      "source_url": "https://newsletter.semianalysis.com/p/eda-market-primer",
+      "notes": "Advanced chip design requires EDA; Synopsys is one of the dominant vendors."
+    },
+    {
+      "source_node": "Cadence",
+      "target_node": "NVIDIA",
+      "relationship_type": "software_to_designer",
+      "estimated_weight": 4,
+      "weight_basis": "inferred dependency",
+      "public_or_private": "public",
+      "ticker_if_public": "CDNS",
+      "geography": "US",
+      "confidence": "medium",
+      "source_url": "https://www.marketscreener.com/news/cadence-design-annual-report-for-fiscal-year-ending-december-31-2025-form-10-k-ce7e5ddcd98af023",
+      "notes": "Advanced chip design and systems-company ASICs require EDA and verification tooling."
+    },
+    {
+      "source_node": "Cadence",
+      "target_node": "Hyperscaler ASIC teams",
+      "relationship_type": "software_to_designer",
+      "estimated_weight": 5,
+      "weight_basis": "inferred dependency",
+      "public_or_private": "public",
+      "ticker_if_public": "CDNS",
+      "geography": "US",
+      "confidence": "medium",
+      "source_url": "https://newsletter.semianalysis.com/p/eda-market-primer",
+      "notes": "Systems companies are a fast-growing EDA customer category."
+    },
+    {
+      "source_node": "Synopsys",
+      "target_node": "Hyperscaler ASIC teams",
+      "relationship_type": "software_to_designer",
+      "estimated_weight": 5,
+      "weight_basis": "inferred dependency",
+      "public_or_private": "public",
+      "ticker_if_public": "SNPS",
+      "geography": "US",
+      "confidence": "medium",
+      "source_url": "https://newsletter.semianalysis.com/p/eda-market-primer",
+      "notes": "Custom ASIC proliferation expands EDA demand beyond traditional semiconductor companies."
+    },
+    {
+      "source_node": "Silicon wafer",
+      "target_node": "TSMC",
+      "relationship_type": "material_to_supplier",
+      "estimated_weight": 5,
+      "weight_basis": "qualitative importance score 1-5",
+      "public_or_private": "mixed",
+      "ticker_if_public": "4063.T / 3436.T / WAF.DE / 6488.TW",
+      "geography": "Japan / Germany / Taiwan / Korea",
+      "confidence": "medium",
+      "source_url": "https://www.semi.org/en/semi-press-release/semi-reports-2025-annual-worldwide-silicon-wafer-shipments-and-revenue-results",
+      "notes": "300mm advanced wafers are foundational for AI logic and HBM; oligopoly includes Shin-Etsu, SUMCO, GlobalWafers, Siltronic, SK Siltron."
+    },
+    {
+      "source_node": "Shin-Etsu Chemical",
+      "target_node": "TSMC",
+      "relationship_type": "supplier_to_company",
+      "estimated_weight": 4,
+      "weight_basis": "inferred dependency",
+      "public_or_private": "public",
+      "ticker_if_public": "4063.T",
+      "geography": "Japan",
+      "confidence": "medium",
+      "source_url": "https://www.semi.org/en/semi-press-release/semi-reports-2025-annual-worldwide-silicon-wafer-shipments-and-revenue-results",
+      "notes": "Leading wafer oligopoly member and also semiconductor materials exposure."
+    },
+    {
+      "source_node": "SUMCO",
+      "target_node": "TSMC",
+      "relationship_type": "supplier_to_company",
+      "estimated_weight": 4,
+      "weight_basis": "inferred dependency",
+      "public_or_private": "public",
+      "ticker_if_public": "3436.T",
+      "geography": "Japan",
+      "confidence": "medium",
+      "source_url": "https://www.semi.org/en/semi-press-release/semi-reports-2025-annual-worldwide-silicon-wafer-shipments-and-revenue-results",
+      "notes": "SEMI quote from SUMCO executive highlights strong 300mm demand in advanced AI-driven logic/HBM."
+    },
+    {
+      "source_node": "GlobalWafers",
+      "target_node": "TSMC",
+      "relationship_type": "supplier_to_company",
+      "estimated_weight": 3,
+      "weight_basis": "inferred dependency",
+      "public_or_private": "public",
+      "ticker_if_public": "6488.TWO",
+      "geography": "Taiwan",
+      "confidence": "medium",
+      "source_url": "https://www.semi.org/en/taxonomy/term/45726",
+      "notes": "Taiwan wafer supplier with advanced logic/cloud/HBM demand linkage. Yahoo uses 6488.TWO for GlobalWafers."
+    },
+    {
+      "source_node": "Siltronic",
+      "target_node": "Advanced logic and memory fabs",
+      "relationship_type": "supplier_to_company",
+      "estimated_weight": 3,
+      "weight_basis": "qualitative importance score 1-5",
+      "public_or_private": "public",
+      "ticker_if_public": "WAF.DE",
+      "geography": "Germany",
+      "confidence": "high",
+      "source_url": "https://www.siltronic.com/fileadmin/investorrelations/2025/Q4/260312_Siltronic_Annual_Report_2025_safe.pdf",
+      "notes": "Siltronic produces wafers used in AI, servers, data centers, and network technology."
+    },
+    {
+      "source_node": "Ultra-high-purity gases",
+      "target_node": "Advanced fabs",
+      "relationship_type": "material_to_supplier",
+      "estimated_weight": 4,
+      "weight_basis": "qualitative importance score 1-5",
+      "public_or_private": "mixed",
+      "ticker_if_public": "AIQUY / LIN / 4091.T",
+      "geography": "France / UK-US / Japan",
+      "confidence": "medium",
+      "source_url": "https://www.airliquide.com/sites/airliquide.com/files/2026-02/air-liquide-pr-fy-2025-with-record-performance-and-confident-in-its-transformation-dynamic-air-liquide-confirms-its-growth-outlook.pdf",
+      "notes": "Carrier gases, neon, argon, oxygen, nitrogen, and specialty gases are required for lithography, etch, deposition, and fab operations."
+    },
+    {
+      "source_node": "Air Liquide",
+      "target_node": "Advanced fabs",
+      "relationship_type": "supplier_to_company",
+      "estimated_weight": 4,
+      "weight_basis": "qualitative importance score 1-5",
+      "public_or_private": "public",
+      "ticker_if_public": "AIQUY",
+      "geography": "France / global",
+      "confidence": "high",
+      "source_url": "https://www.airliquide.com/sites/airliquide.com/files/2026-02/air-liquide-pr-fy-2025-with-record-performance-and-confident-in-its-transformation-dynamic-air-liquide-confirms-its-growth-outlook.pdf",
+      "notes": "2025 Air Liquide report cites semiconductor ultra-pure gas investments and long-term supply contracts."
+    },
+    {
+      "source_node": "EUV photoresist",
+      "target_node": "ASML EUV ecosystem",
+      "relationship_type": "material_to_supplier",
+      "estimated_weight": 4,
+      "weight_basis": "qualitative importance score 1-5",
+      "public_or_private": "mixed",
+      "ticker_if_public": "4185.T / 4186.T / 4063.T / MRK.DE / ENTG",
+      "geography": "Japan / Germany / US",
+      "confidence": "medium",
+      "source_url": "https://www.meticulousresearch.com/product/extreme-ultraviolet-lithography-materials-market-6572",
+      "notes": "EUV-qualified materials supplier base is small; qualification cycles are long."
+    },
+    {
+      "source_node": "Entegris",
+      "target_node": "EUV metal-oxide resist ecosystem",
+      "relationship_type": "supplier_to_company",
+      "estimated_weight": 4,
+      "weight_basis": "qualitative importance score 1-5",
+      "public_or_private": "public",
+      "ticker_if_public": "ENTG",
+      "geography": "US",
+      "confidence": "high",
+      "source_url": "https://markets.financialcontent.com/stocks/article/bizwire-2026-5-26-entegris-and-jsr-corporationinpria-corporation-announce-non-exclusive-cross-licensing-to-euv-lithography",
+      "notes": "Entegris/JSR-Inpria cross-license spans MOR precursors, filtration, handling, and delivery systems for EUV."
+    },
+    {
+      "source_node": "JSR / Inpria",
+      "target_node": "EUV photoresist",
+      "relationship_type": "supplier_to_company",
+      "estimated_weight": 4,
+      "weight_basis": "qualitative importance score 1-5",
+      "public_or_private": "private",
+      "ticker_if_public": "",
+      "geography": "Japan / US",
+      "confidence": "high",
+      "source_url": "https://markets.financialcontent.com/stocks/article/bizwire-2026-5-26-entegris-and-jsr-corporationinpria-corporation-announce-non-exclusive-cross-licensing-to-euv-lithography",
+      "notes": "JSR is private after buyout; relevant as non-tradable but important ecosystem bottleneck."
+    },
+    {
+      "source_node": "Zeiss SMT optics",
+      "target_node": "ASML EUV",
+      "relationship_type": "supplier_to_company",
+      "estimated_weight": 5,
+      "weight_basis": "qualitative importance score 1-5",
+      "public_or_private": "private",
+      "ticker_if_public": "",
+      "geography": "Germany",
+      "confidence": "medium",
+      "source_url": "https://www.asml.com/en/investors/annual-report/2025/financials",
+      "notes": "Private optical subsystem dependency; key hidden bottleneck but no direct liquid public expression."
+    },
+    {
+      "source_node": "Trumpf lasers",
+      "target_node": "ASML EUV",
+      "relationship_type": "supplier_to_company",
+      "estimated_weight": 5,
+      "weight_basis": "qualitative importance score 1-5",
+      "public_or_private": "private",
+      "ticker_if_public": "",
+      "geography": "Germany",
+      "confidence": "medium",
+      "source_url": "https://www.asml.com/en/investors/annual-report/2025/financials",
+      "notes": "Private laser subsystem dependency inside EUV source chain; important but not directly investable."
+    },
+    {
+      "source_node": "ASML EUV",
+      "target_node": "Intel Foundry",
+      "relationship_type": "equipment_to_manufacturer",
+      "estimated_weight": 4,
+      "weight_basis": "qualitative importance score 1-5",
+      "public_or_private": "public",
+      "ticker_if_public": "INTC",
+      "geography": "US",
+      "confidence": "medium",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/937966/000162828026011377/asml-2025xannualxreportx.htm",
+      "notes": "High-NA / advanced-node foundry ambitions depend on ASML; Intel is a higher-risk foundry turnaround proxy."
+    },
+    {
+      "public_or_private": "public",
+      "confidence": "high",
+      "source_node": "Advantest",
+      "target_node": "AI Accelerator Package",
+      "relationship_type": "equipment_to_manufacturer",
+      "estimated_weight": 5,
+      "weight_basis": "qualitative importance score 1-5",
+      "ticker_if_public": "6857.T",
+      "geography": "Japan",
+      "source_url": "https://www.advantest.com/document/en/investors/ir-library/result/JE_BIZ_260427_note.pdf",
+      "notes": "AI/HPC complexity and HBM drive test intensity; Advantest estimates 66% SoC tester share."
+    },
+    {
+      "public_or_private": "public",
+      "confidence": "high",
+      "source_node": "Advantest",
+      "target_node": "HBM stack",
+      "relationship_type": "equipment_to_manufacturer",
+      "estimated_weight": 4,
+      "weight_basis": "qualitative importance score 1-5",
+      "ticker_if_public": "6857.T",
+      "geography": "Japan",
+      "source_url": "https://www.advantest.com/document/en/investors/ir-library/annual/E_all_IAR2025.pdf",
+      "notes": "HBM and high-performance DRAM expand memory test demand."
+    },
+    {
+      "public_or_private": "public",
+      "confidence": "medium",
+      "source_node": "Lasertec",
+      "target_node": "ASML EUV ecosystem",
+      "relationship_type": "equipment_to_manufacturer",
+      "estimated_weight": 5,
+      "weight_basis": "qualitative importance score 1-5",
+      "ticker_if_public": "6920.T",
+      "geography": "Japan",
+      "source_url": "https://uk.marketscreener.com/news/lasertec-is-beaming-straight-to-the-bank-ce7e51dcde8dfe23",
+      "notes": "Actinic EUV mask inspection gatekeeper for advanced logic and memory masks."
+    },
+    {
+      "public_or_private": "public",
+      "confidence": "medium",
+      "source_node": "Lasertec",
+      "target_node": "TSMC",
+      "relationship_type": "equipment_to_manufacturer",
+      "estimated_weight": 5,
+      "weight_basis": "qualitative importance score 1-5",
+      "ticker_if_public": "6920.T",
+      "geography": "Japan / Taiwan",
+      "source_url": "https://japan-earnings.com/earnings/2026/04/6920-lasertec-analysis-20260428/",
+      "notes": "Customers include leading EUV fabs and mask blank manufacturers; order trough may be opportunity."
+    },
+    {
+      "public_or_private": "public",
+      "confidence": "high",
+      "source_node": "HOYA",
+      "target_node": "EUV photoresist",
+      "relationship_type": "material_to_supplier",
+      "estimated_weight": 4,
+      "weight_basis": "qualitative importance score 1-5",
+      "ticker_if_public": "7741.T",
+      "geography": "Japan",
+      "source_url": "https://www.hoya.com/ir/2025/en/review/it.html",
+      "notes": "HOYA produces EUV/DUV mask blanks and is developing High-NA/angstrom-generation products."
+    },
+    {
+      "public_or_private": "public",
+      "confidence": "medium",
+      "source_node": "HOYA",
+      "target_node": "Lasertec",
+      "relationship_type": "supplier_to_company",
+      "estimated_weight": 4,
+      "weight_basis": "qualitative importance score 1-5",
+      "ticker_if_public": "7741.T",
+      "geography": "Japan",
+      "source_url": "https://japan-earnings.com/earnings/2026/04/6920-lasertec-analysis-20260428/",
+      "notes": "Mask blank manufacturers are Lasertec customer ecosystem participants."
+    },
+    {
+      "public_or_private": "public",
+      "confidence": "high",
+      "source_node": "DISCO",
+      "target_node": "HBM stack",
+      "relationship_type": "equipment_to_manufacturer",
+      "estimated_weight": 5,
+      "weight_basis": "qualitative importance score 1-5",
+      "ticker_if_public": "6146.T",
+      "geography": "Japan",
+      "source_url": "https://www.disco.co.jp/jp/ir/movie/doc/E_Tech_Briefing_2025.pdf",
+      "notes": "HBM and 2.5D packages create grinding/dicing opportunities at multiple process steps."
+    },
+    {
+      "public_or_private": "public",
+      "confidence": "high",
+      "source_node": "DISCO",
+      "target_node": "AI Accelerator Package",
+      "relationship_type": "equipment_to_manufacturer",
+      "estimated_weight": 5,
+      "weight_basis": "qualitative importance score 1-5",
+      "ticker_if_public": "6146.T",
+      "geography": "Japan",
+      "source_url": "https://www.disco.co.jp/eg/ir/library/doc/film/20260422.pdf",
+      "notes": "Generative AI and advanced packaging boosted equipment shipments."
+    },
+    {
+      "public_or_private": "public",
+      "confidence": "high",
+      "source_node": "BESI",
+      "target_node": "AI Accelerator Package",
+      "relationship_type": "equipment_to_manufacturer",
+      "estimated_weight": 4,
+      "weight_basis": "qualitative importance score 1-5",
+      "ticker_if_public": "BESI.AS",
+      "geography": "Netherlands",
+      "source_url": "https://www.marketscreener.com/news/be-semiconductor-industries-n-annual-report-2025-ce7e5cdcdd8bf026",
+      "notes": "Hybrid bonding is important for generative AI devices and chiplet architectures."
+    },
+    {
+      "public_or_private": "public",
+      "confidence": "medium",
+      "source_node": "BESI",
+      "target_node": "HBM stack",
+      "relationship_type": "equipment_to_manufacturer",
+      "estimated_weight": 4,
+      "weight_basis": "qualitative importance score 1-5",
+      "ticker_if_public": "BESI.AS",
+      "geography": "Netherlands",
+      "source_url": "https://www.besi.com/investor-relations/press-releases/details/be-semiconductor-industries-nv-announces-q4-25-and-full-year-2025-results/",
+      "notes": "Hybrid bonding orders increased with AI-related 2.5D and photonics applications."
+    },
+    {
+      "public_or_private": "public",
+      "confidence": "medium",
+      "source_node": "VAT Group",
+      "target_node": "Lam Research",
+      "relationship_type": "supplier_to_company",
+      "estimated_weight": 4,
+      "weight_basis": "qualitative importance score 1-5",
+      "ticker_if_public": "VACN.SW",
+      "geography": "Switzerland / US",
+      "source_url": "https://www.vatgroup.com/investor-relations/annual-report/letter-to-stakeholders",
+      "notes": "Vacuum valves embedded in vacuum-intensive semicap tools."
+    },
+    {
+      "public_or_private": "public",
+      "confidence": "medium",
+      "source_node": "VAT Group",
+      "target_node": "Applied Materials",
+      "relationship_type": "supplier_to_company",
+      "estimated_weight": 4,
+      "weight_basis": "qualitative importance score 1-5",
+      "ticker_if_public": "VACN.SW",
+      "geography": "Switzerland / US",
+      "source_url": "https://www.vatgroup.com/news/vat-medienmitteilung-zum-jahresabschluss-2025",
+      "notes": "Leading-edge AI logic/HBM requires vacuum-intensive processes and high-end valves."
+    }
+  ],
+  "edge_convention": "source_node = upstream supplier/enabler; target_node = downstream consumer.",
+  "crosscheck_summary": {
+    "godel_terminal": "CF panels confirmed fresh filing coverage for core U.S./ADR names. Use Godel CF as filing router; use Godel DES/FOCUS or Yahoo for quote sanity.",
+    "yfinance": "27/28 original+candidate quote checks succeeded. GlobalWafers corrected from 6488.TW to 6488.TWO.",
+    "source_review": "Strongest new source-backed additions: Advantest, Lasertec, DISCO, HOYA, BESI, VAT Group, Shin-Etsu, SUMCO, GlobalWafers, Tokyo Electron."
+  },
+  "research_gaps": [
+    {
+      "gap": "Some edges remain qualitative rather than disclosed revenue/customer exposure.",
+      "action": "Pull 10-K/annual-report customer concentration and segment revenue per ticker before sizing."
+    },
+    {
+      "gap": "Private bottlenecks Zeiss SMT and Trumpf lasers are non-investable directly.",
+      "action": "Map public indirect expressions: ASML, Carl Zeiss Meditec is not the right pure proxy; look for suppliers to Zeiss/Trumpf."
+    },
+    {
+      "gap": "Godel quote command opened CF/filing panels in this session, not FOCUS quote panels.",
+      "action": "Use Godel DES/FOCUS manually for chart/quote setup, and yfinance for automated price table."
+    },
+    {
+      "gap": "International ticker venue hygiene matters (example: GlobalWafers Yahoo symbol 6488.TWO).",
+      "action": "Maintain a quote_symbol field separate from primary_ticker in next schema iteration."
+    },
+    {
+      "gap": "Chart setup is not yet generated for each ticker.",
+      "action": "Add yfinance 6mo OHLCV support/resistance/volume shelf calculation next."
+    }
+  ],
+  "opportunity_expansion": [
+    {
+      "ticker": "6920.T",
+      "name": "Lasertec",
+      "why": "Only commercial actinic EUV mask inspection; cycle trough + monopoly = asymmetric watch."
+    },
+    {
+      "ticker": "6146.T",
+      "name": "DISCO",
+      "why": "HBM layer-count intensity multiplies wafer thinning/dicing steps; consumables recurring revenue."
+    },
+    {
+      "ticker": "6857.T",
+      "name": "Advantest",
+      "why": "AI multi-die/HBM complexity drives test intensity; source cites record results and share gains."
+    },
+    {
+      "ticker": "7741.T",
+      "name": "HOYA",
+      "why": "EUV mask blanks are narrow-base upstream material bottleneck for advanced photomasks."
+    },
+    {
+      "ticker": "VACN.SW",
+      "name": "VAT Group",
+      "why": "Supplier-of-suppliers: high-end vacuum valves inside the tools used for AI logic/HBM."
+    },
+    {
+      "ticker": "BESI.AS",
+      "name": "BESI",
+      "why": "Hybrid bonding pure play for future 3D/chiplet/HBM packaging."
+    }
+  ]
+}
