@@ -11,6 +11,7 @@
     alerts: [],
     ipoFilters: { status: "all", categories: [] }, // status: "all" | "upcoming" | "priced"
     stackFilter: "all",
+    fundMetric: "sales", // sales | netincome | ebitda — Godel EM style ($B, not per-share)
   });
 
   function loadStore() {
@@ -536,34 +537,50 @@
       <ul>${items.map((x) => `<li>${x}</li>`).join("")}</ul>
     </div>`;
   }
+  function renderGodelMetricChips(active) {
+    const items = [
+      { id: "sales", label: "Sales" },
+      { id: "netincome", label: "Net Income" },
+      { id: "ebitda", label: "EBITDA" },
+    ];
+    return items.map((m) =>
+      `<button type="button" class="filter-chip godel-metric${active === m.id ? " active" : ""}" data-fund-metric="${m.id}">${m.label}</button>`
+    ).join("");
+  }
+
   function renderThesisFundamentals(t) {
+    const metric = state.fundMetric || "sales";
     return `
       <h2>Why this works — four load-bearing pillars</h2>
       <div class="grid-2">${t.pillars.map(renderCard).join("")}</div>
 
-      <h2 class="chart-section-title">Price vs earnings (10y)</h2>
-      <p class="chart-section-lead"><strong>Left axis</strong> = monthly share price. <strong>Right axis</strong> = EPS trend (quarterly reported line + annual fiscal-year line). Same timeline — comparable at a glance.</p>
-      <div class="chart-box chart-box-xxl"><canvas id="chart-compare"></canvas></div>
-      <p class="caption">Blue fill = price. Green = quarterly EPS. Amber dashed = annual EPS. Source: Yahoo Finance.</p>
+      <section class="godel-em-block">
+        <h2 class="chart-section-title">Earnings matrix · Godel style</h2>
+        <p class="chart-section-lead">Same metrics as Godel <strong>EM</strong> / <strong>FA</strong>: fundamentals in <strong>$ billions</strong> (not per-share). Green = reported. Switch metric below.</p>
+        <div class="filter-row wrap" id="fund-metric-row">${renderGodelMetricChips(metric)}</div>
 
-      <h3>Quarterly EPS — reported vs estimate</h3>
-      <div class="chart-box chart-box-xl"><canvas id="chart-eps-quarterly"></canvas></div>
-      <p class="caption">Gray = consensus ahead of print; green = reported. Source: Yahoo Finance earnings calendar.</p>
+        <h3 class="em-subhead">Price vs ${metric === "sales" ? "sales" : metric === "netincome" ? "net income" : "EBITDA"} (10y, dual axis)</h3>
+        <div class="chart-box chart-box-xxl"><canvas id="chart-compare"></canvas></div>
+        <p class="caption"><span class="legend-swatch price"></span> Left · share price ($) &nbsp; <span class="legend-swatch fund"></span> Right · ${metric === "sales" ? "revenue" : metric} ($B). Source: Yahoo + Godel FA thesis table.</p>
 
-      <h3>Annual EPS path (10y + forward)</h3>
-      <div class="chart-box chart-box-lg"><canvas id="chart-eps-annual"></canvas></div>
-      <p class="caption">Green = reported fiscal year; amber = author / consensus forward from thesis model.</p>
+        <h3 class="em-subhead">Yearly · $B</h3>
+        <div class="chart-box chart-box-lg"><canvas id="chart-em-annual"></canvas></div>
+
+        <h3 class="em-subhead">Quarterly · $B</h3>
+        <div class="chart-box chart-box-lg"><canvas id="chart-em-quarter"></canvas></div>
+        <p class="caption">Mirrors Godel EM lower bar chart. Quarterly depth from Yahoo income statement (when available).</p>
+      </section>
 
       <div class="grid-2">
         <div>
           <h3>Revenue trajectory ($B)</h3>
           <div class="chart-box chart-box-lg"><canvas id="chart-rev"></canvas></div>
-          <p class="caption">10 fiscal years. Source: Godel FA.</p>
+          <p class="caption">10 fiscal years · Godel FA.</p>
         </div>
         <div>
           <h3>Margin expansion</h3>
           <div class="chart-box chart-box-lg"><canvas id="chart-margin"></canvas></div>
-          <p class="caption">Operating vs net margin (%). Source: Godel FA.</p>
+          <p class="caption">Operating vs net margin (%).</p>
         </div>
       </div>`;
   }
@@ -624,33 +641,19 @@
     const c = chartColors();
     if (view === "thesis") {
       if (window.ThesisCharts) {
-        ThesisCharts.mount(id, t, view, { chartColors, makeChart });
+        ThesisCharts.mount(id, t, view, {
+          chartColors,
+          makeChart,
+          getMetric: () => state.fundMetric || "sales",
+        });
       }
-      makeChart(
-        "chart-rev",
-        {
-          type: "line",
-          data: {
-            labels: t.revenueYears,
-            datasets: [{ label: "Revenue ($B)", data: t.revenue, borderColor: c.info, backgroundColor: "rgba(110,168,254,0.15)", fill: true, tension: 0.3 }],
-          },
-        },
-        { lg: true }
-      );
-      makeChart(
-        "chart-margin",
-        {
-          type: "line",
-          data: {
-            labels: t.revenueYears,
-            datasets: [
-              { label: "Operating %", data: t.opMargin, borderColor: c.success, tension: 0.3 },
-              { label: "Net %", data: t.netMargin, borderColor: c.info, tension: 0.3 },
-            ],
-          },
-        },
-        { lg: true }
-      );
+      document.querySelectorAll("#fund-metric-row [data-fund-metric]").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          state.fundMetric = btn.dataset.fundMetric;
+          saveStore();
+          renderThesisDetail(id, view);
+        });
+      });
     } else {
       makeChart(
         "chart-pe",

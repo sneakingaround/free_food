@@ -95,6 +95,54 @@ def annual_eps_series(symbol: str) -> list[dict]:
     return [{"year": str(y), "eps": merged[y]} for y in years if y >= 2016]
 
 
+def _row_billion(inc: pd.DataFrame, row: str, col) -> float | None:
+    if inc is None or row not in inc.index:
+        return None
+    val = inc.loc[row, col]
+    if pd.isna(val):
+        return None
+    return round(float(val) / 1e9, 3)
+
+
+def fetch_fundamentals(symbol: str) -> tuple[list[dict], list[dict]]:
+    """Annual + quarterly income statement lines in $B (Godel EM-style metrics)."""
+    annual: list[dict] = []
+    quarterly: list[dict] = []
+    rows = {
+        "sales": "Total Revenue",
+        "ebitda": "EBITDA",
+        "netincome": "Net Income",
+    }
+    try:
+        t = yf.Ticker(symbol)
+        inc = t.income_stmt
+        if inc is not None:
+            for col in sorted(inc.columns, key=lambda c: pd.Timestamp(c)):
+                year = int(pd.Timestamp(col).year)
+                point = {"year": str(year)}
+                for key, row in rows.items():
+                    v = _row_billion(inc, row, col)
+                    if v is not None:
+                        point[key] = v
+                if len(point) > 1:
+                    annual.append(point)
+
+        qinc = t.quarterly_income_stmt
+        if qinc is not None:
+            for col in sorted(qinc.columns, key=lambda c: pd.Timestamp(c)):
+                d = pd.Timestamp(col).strftime("%Y-%m-%d")
+                point = {"date": d}
+                for key, row in rows.items():
+                    v = _row_billion(qinc, row, col)
+                    if v is not None:
+                        point[key] = v
+                if len(point) > 1:
+                    quarterly.append(point)
+    except Exception as exc:  # noqa: BLE001
+        print(f"  warn fundamentals {symbol}: {exc}")
+    return annual, quarterly
+
+
 def main() -> None:
     OUT.mkdir(parents=True, exist_ok=True)
     for key, sym in SYMBOLS.items():
@@ -103,6 +151,7 @@ def main() -> None:
         bars_10y = fetch_bars(sym, "10y", "1mo")
         annual = annual_eps_series(sym)
         quarterly = fetch_quarterly_earnings(sym)
+        fund_annual, fund_quarter = fetch_fundamentals(sym)
 
         payload = {
             "id": key,
@@ -115,6 +164,8 @@ def main() -> None:
             "interval10y": "1mo",
             "earningsAnnual": annual,
             "earningsQuarterly": quarterly,
+            "fundamentalsAnnual": fund_annual,
+            "fundamentalsQuarterly": fund_quarter,
             "fetchedAt": pd.Timestamp.now("UTC").strftime("%Y-%m-%d"),
         }
         path = OUT / f"{key}.json"
