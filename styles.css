@@ -113,7 +113,7 @@ a:hover { color: var(--accent-2); }
 .tabbar {
   position: sticky; bottom: 0; z-index: 30;
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(5, 1fr);
   gap: 0;
   height: calc(var(--tabbar-h) + var(--safe-bottom));
   padding-bottom: var(--safe-bottom);
@@ -547,6 +547,83 @@ a:hover { color: var(--accent-2); }
 .zone-sym { font-weight: 800; font-size: 0.78rem; letter-spacing: -0.01em; min-width: 42px; }
 .zone-zones { display: flex; flex-wrap: wrap; gap: 0.3rem; }
 .zone-empty { color: var(--faint); font-size: 0.82rem; }
+
+/* ============================================================
+   IPO PLAY
+   ============================================================ */
+.filter-block { display: flex; flex-direction: column; gap: 0.45rem; margin-bottom: 1.1rem; }
+.filter-row { display: flex; gap: 0.4rem; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; padding-bottom: 0.1rem; }
+.filter-row::-webkit-scrollbar { display: none; }
+.filter-row.wrap { flex-wrap: wrap; overflow-x: visible; }
+.filter-chip {
+  appearance: none;
+  flex: 0 0 auto;
+  background: var(--surface);
+  border: 1px solid var(--border-soft);
+  color: var(--muted);
+  padding: 0.4rem 0.8rem;
+  border-radius: 999px;
+  font-size: 0.76rem; font-weight: 650;
+  letter-spacing: -0.01em;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.18s var(--ease), color 0.18s var(--ease), border-color 0.18s var(--ease);
+}
+.filter-chip:hover { color: var(--text); border-color: var(--border); }
+.filter-chip.active {
+  background: color-mix(in srgb, var(--accent) 16%, transparent);
+  border-color: color-mix(in srgb, var(--accent) 45%, var(--border));
+  color: var(--accent);
+}
+
+.cat-tags { display: flex; flex-wrap: wrap; gap: 0.3rem; margin-bottom: 0.7rem; }
+.cat-tag {
+  font-size: 0.64rem; font-weight: 650; letter-spacing: 0.01em;
+  padding: 0.18rem 0.5rem;
+  border-radius: 6px;
+  background: var(--surface-3);
+  color: var(--muted);
+  border: 1px solid var(--border-soft);
+}
+
+.ipo-card .thesis-card-title { margin-bottom: 0.5rem; }
+.ipo-journey {
+  display: flex; align-items: center; gap: 0.4rem;
+  flex-wrap: wrap;
+  padding: 0.55rem 0;
+  margin-bottom: 0.2rem;
+}
+.ij-step { display: inline-flex; flex-direction: column; line-height: 1.1; }
+.ij-l { font-size: 0.58rem; color: var(--faint); text-transform: uppercase; letter-spacing: 0.04em; }
+.ij-v { font-size: 0.92rem; font-weight: 750; letter-spacing: -0.01em; font-variant-numeric: tabular-nums; }
+.ij-arrow { color: var(--faint); font-size: 0.85rem; }
+.ipo-journey.upcoming .ij-step { margin-right: 1.1rem; }
+
+.ipo-detail-head { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.2rem; }
+.ipo-detail-head .badge { margin-bottom: 0; }
+
+.timeline { list-style: none; display: flex; flex-direction: column; margin: 0.4rem 0 1.2rem; }
+.timeline-item { display: grid; grid-template-columns: 16px 1fr; gap: 0.7rem; position: relative; padding-bottom: 0.9rem; }
+.timeline-item:not(:last-child)::before {
+  content: ""; position: absolute;
+  left: 7px; top: 14px; bottom: 0;
+  width: 1px; background: var(--border);
+}
+.tl-dot {
+  width: 11px; height: 11px; margin-top: 4px;
+  border-radius: 999px;
+  background: var(--accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 18%, transparent);
+}
+.tl-body { min-width: 0; }
+.tl-head { display: flex; align-items: baseline; justify-content: space-between; gap: 0.5rem; }
+.tl-type { font-weight: 700; font-size: 0.82rem; letter-spacing: -0.01em; }
+.tl-date { font-size: 0.7rem; color: var(--faint); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.tl-desc { font-size: 0.8rem; color: var(--muted); line-height: 1.5; margin-top: 0.15rem; }
+
+@media (max-width: 380px) {
+  .tab { font-size: 0.6rem; }
+}
 
 /* ============================================================
    SETTINGS
