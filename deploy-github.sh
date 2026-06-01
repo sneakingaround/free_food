@@ -1,15 +1,24 @@
 #!/usr/bin/env bash
-# Create repo (if needed), push main, deploy via GitHub Actions → Pages.
+# Deploy investment-theses to GitHub Pages (canonical repo or whisper fallback).
 set -euo pipefail
 cd "$(dirname "$0")"
-REPO="sneakingaround/investment-theses"
+REPO="sneakingaround/free_food"
 REMOTE="git@github.com:${REPO}.git"
-SITE="https://sneakingaround.github.io/investment-theses/"
+SITE="https://sneakingaround.github.io/free_food/"
 
-# Optional PAT for repo creation (SSH alone cannot create repos).
+# Hermes / OpenClaw auth discovery (see scripts/github-auth-discover.sh).
 if [[ -f "$HOME/.hermes/.env" ]]; then
   # shellcheck disable=SC1090
   set -a && source "$HOME/.hermes/.env" && set +a
+fi
+if [[ -z "${GITHUB_TOKEN:-}" && -z "${GH_TOKEN:-}" ]]; then
+  if [[ -f "$HOME/.git-credentials" ]] && grep -q github.com "$HOME/.git-credentials" 2>/dev/null; then
+    GITHUB_TOKEN=$(grep github.com "$HOME/.git-credentials" | head -1 | sed 's|https://[^:]*:\([^@]*\)@.*|\1|')
+  fi
+fi
+GITHUB_TOKEN="${GITHUB_TOKEN:-${GH_TOKEN:-}}"
+if [[ -z "${GITHUB_TOKEN:-}" && -n "${GH_CONFIG_DIR:-}" && -f "${GH_CONFIG_DIR}/hosts.yml" ]]; then
+  export GH_CONFIG_DIR
 fi
 
 python3 fetch-market.py
@@ -37,9 +46,11 @@ create_repo() {
     git push -u origin main
     return 0
   fi
-  echo "Need GitHub API auth to create the repo (SSH push works only after it exists)."
-  echo "  Option A: gh auth login -h github.com -p ssh -s repo,workflow,read:org"
-  echo "  Option B: add GITHUB_TOKEN=ghp_... to ~/.hermes/.env (classic PAT, scope: repo)"
+  echo "No GitHub API token on this host (OpenClaw used SSH git push, not stored gh auth)."
+  echo "  Quick publish (SSH only): ./scripts/publish-via-whisper.sh"
+  echo "  Or create empty repo at https://github.com/new?name=free_food then re-run."
+  echo "  Or: gh auth login -h github.com -p ssh -s repo,workflow,read:org"
+  echo "  Or: GITHUB_TOKEN=ghp_... in ~/.hermes/.env"
   return 1
 }
 

@@ -4,9 +4,9 @@ Mobile-friendly static cards for **IBM**, **ServiceNow (NOW)**, **Nokia (NOK)**,
 
 ## Live site
 
-**https://sneakingaround.github.io/investment-theses/**
+**https://sneakingaround.github.io/free_food/**
 
-(After the first push, enable **Settings → Pages → GitHub Actions** if the workflow has not run yet.)
+(After the first push, enable **Settings → Pages → Source: GitHub Actions** if needed.)
 
 ## Local
 
