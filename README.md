@@ -1,30 +1,33 @@
 # Investment Theses
 
-Mobile-friendly static cards for **IBM**, **ServiceNow (NOW)**, **Nokia (NOK)**, and **Intel (INTC)** — thesis fundamentals, valuation scenarios, and price charts with VPVR.
+Mobile-friendly static cards for **IBM**, **ServiceNow (NOW)**, **Nokia (NOK)**, and **Intel (INTC)**.
 
 ## Live site
 
 **https://sneakingaround.github.io/free_food/**
 
-After the workflow runs, set **Settings → Pages → Build and deployment → Deploy from branch → `gh-pages` → `/ (root)`**.
+### If you see 404 (one-time fix)
+
+1. Open **https://github.com/sneakingaround/free_food/settings/pages**
+2. **Build and deployment** → **Deploy from a branch**
+3. Branch **`main`** · Folder **`/docs`**
+4. Save — wait ~1 minute, then reload the URL above
 
 ## Local
 
 ```bash
 python3 -m http.server 8765
-# open http://127.0.0.1:8765/
+# http://127.0.0.1:8765/
 ```
 
-Refresh OHLCV:
-
 ```bash
-python3 fetch-market.py
+python3 fetch-market.py   # refresh OHLCV JSON
 ```
 
 ## Deploy
 
-```bash
-./deploy-github.sh
-```
+Push to `main` (workflow updates `docs/` automatically):
 
-Requires SSH access to `git@github.com:sneakingaround/*` and one-time `gh auth login` (device code) to create the repo if it does not exist yet.
+```bash
+git push origin main
+```
