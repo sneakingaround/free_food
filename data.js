@@ -132,11 +132,55 @@ const THESES = {
     ],
     footnote: "Below $12: ~3:1 reward-to-risk to bull vs bear. Starter position on telco-capex fear.",
   },
+  intc: {
+    id: "intc",
+    ticker: "INTC US EQ",
+    title: "Intel: The IDM 2.0 Foundry Turnaround",
+    meta: "Intel Corporation · NASDAQ · SEC filings & consensus, 2026-06-01",
+    price: 114.68,
+    stats: [
+      { v: "$114.68", l: "Last price" },
+      { v: "~$494B", l: "Market cap" },
+      { v: "Flat", l: "FY25 revenue YoY", tone: "warning" },
+      { v: "+22%", l: "DCAI Q1 FY26 YoY", tone: "success" },
+    ],
+    lead:
+      '<strong>Turnaround in motion — multiple already re-rated.</strong> FY25 revenue <strong>$52.9B (flat)</strong>, GAAP op margin improving to <strong>(4.2%)</strong> from <strong>(22%)</strong> FY24; non-GAAP EPS <strong>$0.42</strong>. Bet: <strong>18A foundry + server CPU</strong> share stabilize while CHIPS Act funds the fab build-out — but at <strong>~$115</strong> the market prices a lot of success upfront.',
+    pillars: [
+      { title: "1 · Foundry = the swing factor", tag: "18A / IFS", tagTone: "info", body: "IDM 2.0 makes manufacturing the margin engine. Microsoft, NVIDIA, and others on the IFS roadmap — but Q1 FY26 foundry still lost <strong>~$2.4B</strong> op. Success = external wafers at scale." },
+      { title: "2 · DCAI re-accelerating", tag: "+22% YoY", tagTone: "success", body: "Data Center & AI revenue <strong>+22% YoY</strong> in Q1 FY26. CPU-to-GPU ratios in AI clusters may lift server CPU attach — offsets share loss vs AMD in some workloads." },
+      { title: "3 · Cost base reset", tag: "R&D −17%", tagTone: "success", body: "FY25 R&D + MG&A <strong>$18.4B (−17% YoY)</strong>. Gross margin <strong>36.7%</strong> non-GAAP vs trough. $9.7B OCF FY25 funds capex with CHIPS subsidies." },
+      { title: "4 · Valuation ≠ deep value anymore", tag: "Post 6x rally", tagTone: "warning", body: "Stock up sharply off 2024 lows; FY27 consensus EPS <strong>~$0.99</strong> implies <strong>~115x</strong> at spot. You are paying for foundry proof and sustained DCAI — not a cigar butt." },
+    ],
+    revenueYears: ["FY16", "FY17", "FY18", "FY19", "FY20", "FY21", "FY22", "FY23", "FY24", "FY25"],
+    revenue: [59.39, 62.76, 70.85, 71.97, 77.87, 79.02, 63.05, 54.23, 53.1, 52.85],
+    opMargin: [22.0, 27.9, 32.4, 31.6, 31.5, 29.8, 13.8, 0.7, -22.0, -4.2],
+    netMargin: [17.8, 26.1, 29.2, 27.6, 24.6, 21.6, 11.5, 2.7, -35.3, -0.6],
+    epsYears: ["2024", "2025", "2026E", "2027E", "2028E"],
+    eps: [-4.38, -0.06, 0.49, 0.99, 1.35],
+    fwdPeLabels: ["Trailing", "Next 4Q", "FY26E", "FY27E"],
+    fwdPe: [0, 85.0, 234.0, 116.0],
+    scenarios: [
+      { name: "Bear", prob: 0.3, eps: 0.55, exitPe: 40, tone: "danger", thesis: "18A slips, IFS losses persist, AMD/NVIDIA take DC share; multiple compresses to “ex-growth semi.”" },
+      { name: "Base", prob: 0.45, eps: 0.95, exitPe: 58, tone: "info", thesis: "Revenue ~$51–54B, non-GAAP margin mid-single-digits, foundry losses narrow; EPS tracks consensus." },
+      { name: "Bull", prob: 0.25, eps: 1.35, exitPe: 72, tone: "success", thesis: "IFS wins high-volume external customers, DCAI sustains 20%+ growth, op margin high-single-digits by FY28." },
+    ],
+    valNote: "Target = FY27 EPS × exit P/E. After a multi-quarter re-rate, weighted PT sits <strong>well below</strong> spot — edge is sizing and entry, not chasing momentum.",
+    catalysts: ["18A customer ramps and IFS revenue recognition.", "DCAI beat-and-raise on AI server CPU attach.", "CHIPS Act milestone payments / cost sharing.", "Non-GAAP op margin positive full-year FY26."],
+    risks: ["Foundry segment multi-billion quarterly losses until external volume.", "AMD DC revenue overtook Intel Q1 FY26 — share pressure.", "Capex / depreciation overhang if utilizations lag.", "Stock priced for turnaround success — guide-down hits hard."],
+    verdict: "<strong>Hold / trim momentum; add only on deep pullbacks.</strong> Fundamental story improved; <strong>risk/reward at ~$115 favors patience</strong>, not new full-size chasing. Sized bet on IDM 2.0, not a value trap.",
+    zones: [
+      { text: "Back up truck < $75", tone: "success" },
+      { text: "Starter $75–95", tone: "info" },
+      { text: "Hold core; trim > $125", tone: "warning" },
+    ],
+    footnote: "FY25 from Intel Q4 FY25 release. Q1 FY26 DCAI +22% YoY per earnings coverage. Scenario EPS/exit multiples are author assumptions — not investment advice.",
+  },
 };
 
-const TICKER_ORDER = ["ibm", "now", "nok"];
-const TICKER_LABELS = { ibm: "IBM", now: "NOW", nok: "NOK" };
-const YAHOO_SYMBOL = { ibm: "IBM", now: "NOW", nok: "NOK" };
+const TICKER_ORDER = ["ibm", "now", "nok", "intc"];
+const TICKER_LABELS = { ibm: "IBM", now: "NOW", nok: "NOK", intc: "INTC" };
+const YAHOO_SYMBOL = { ibm: "IBM", now: "NOW", nok: "NOK", intc: "INTC" };
 
 function pt(s) {
   return s.eps * s.exitPe;

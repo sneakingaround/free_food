@@ -8,7 +8,6 @@ telegram*
 send-to-telegram.sh
 start.sh
 show-url.sh
-fetch-market.py
 public-url.txt
 .public-url
 localhostrun.log

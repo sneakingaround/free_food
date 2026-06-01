@@ -1,0 +1,31 @@
+{
+	auto_https off
+}
+
+# LAN / iPhone — no cert warning (private network only)
+:8765 {
+	root * /home/gn/investment-theses
+	encode gzip zstd
+	header {
+		X-Content-Type-Options nosniff
+		-Server
+	}
+	file_server
+}
+
+:8443 {
+	tls /home/gn/investment-theses/certs/cert.pem /home/gn/investment-theses/certs/key.pem
+
+	root * /home/gn/investment-theses
+	encode gzip zstd
+
+	header {
+		Strict-Transport-Security "max-age=31536000; includeSubDomains"
+		X-Content-Type-Options nosniff
+		X-Frame-Options SAMEORIGIN
+		Referrer-Policy strict-origin-when-cross-origin
+		-Server
+	}
+
+	file_server
+}

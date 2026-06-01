@@ -64,7 +64,11 @@ body {
   border-radius: 999px;
   padding: 0.28rem;
 }
-.ticker-row { grid-template-columns: repeat(3, 1fr); margin-bottom: 0.5rem; }
+.ticker-row { grid-template-columns: repeat(4, 1fr); margin-bottom: 0.5rem; }
+@media (max-width: 420px) {
+  .ticker-row { grid-template-columns: repeat(2, 1fr); border-radius: 14px; }
+  .ticker-btn { font-size: 0.78rem; padding: 0.5rem 0.35rem; }
+}
 .view-row { grid-template-columns: repeat(2, 1fr); }
 
 .ticker-btn,
