@@ -46,12 +46,11 @@ window.ThesisCharts = (function () {
     };
   }
 
-  function monthLabels(bars) {
+  function monthTickLabels(bars) {
     const out = [];
     let lastYear = "";
     bars.forEach((b) => {
-      const d = new Date(b.t * 1000);
-      const y = String(d.getFullYear());
+      const y = String(new Date(b.t * 1000).getFullYear());
       out.push(y !== lastYear ? y : "");
       lastYear = y;
     });
@@ -72,58 +71,120 @@ window.ThesisCharts = (function () {
     return best;
   }
 
-  function renderPriceEarnings(id, thesis, market, c, makeChart) {
+  function lastMonthIndexForYear(bars, year) {
+    let idx = -1;
+    bars.forEach((b, i) => {
+      if (new Date(b.t * 1000).getFullYear() === year) idx = i;
+    });
+    return idx;
+  }
+
+  /** Dual-axis: left = monthly price, right = quarterly + annual EPS trend */
+  function renderPriceEarningsCompare(market, c, makeChart) {
     const bars = market?.bars10y || [];
     if (!bars.length) return false;
 
-    const labels = monthLabels(bars);
-    const prices = bars.map((b) => b.c);
-    const pricePts = prices.map((y, x) => ({ x, y }));
-    const q = (market.earningsQuarterly || []).filter((e) => e.eps != null);
+    const tickLabels = monthTickLabels(bars);
+    const xMax = bars.length - 1;
 
-    const earnPoints = q.map((e) => {
-      const idx = nearestBarIndex(bars, e.date);
-      return { x: idx, y: prices[idx], eps: e.eps, date: e.date };
-    });
+    const pricePts = bars.map((b, x) => ({ x, y: b.c }));
+
+    const quarterly = (market.earningsQuarterly || [])
+      .filter((e) => e.eps != null)
+      .sort((a, b) => a.date.localeCompare(b.date));
+
+    const epsQuarterPts = quarterly.map((e) => ({
+      x: nearestBarIndex(bars, e.date),
+      y: e.eps,
+      date: e.date,
+    }));
+
+    const annual = (market.earningsAnnual || []).slice().sort((a, b) => Number(a.year) - Number(b.year));
+    const epsAnnualPts = annual
+      .map((a) => {
+        const idx = lastMonthIndexForYear(bars, Number(a.year));
+        if (idx < 0) return null;
+        return { x: idx, y: a.eps, year: a.year };
+      })
+      .filter(Boolean);
+
+    const datasets = [
+      {
+        type: "line",
+        label: "Share price",
+        data: pricePts,
+        yAxisID: "yPrice",
+        borderColor: c.info,
+        backgroundColor: "rgba(110,168,254,0.1)",
+        fill: true,
+        tension: 0.12,
+        pointRadius: 0,
+        borderWidth: 2,
+        order: 2,
+      },
+    ];
+
+    if (epsQuarterPts.length >= 2) {
+      datasets.push({
+        type: "line",
+        label: "EPS (quarterly reported)",
+        data: epsQuarterPts,
+        yAxisID: "yEps",
+        borderColor: c.success,
+        backgroundColor: "rgba(61,214,140,0.08)",
+        borderWidth: 2.5,
+        pointRadius: 4,
+        pointHoverRadius: 6,
+        pointBackgroundColor: c.success,
+        tension: 0.15,
+        spanGaps: true,
+        order: 1,
+      });
+    }
+
+    if (epsAnnualPts.length >= 2) {
+      datasets.push({
+        type: "line",
+        label: "EPS (annual)",
+        data: epsAnnualPts,
+        yAxisID: "yEps",
+        borderColor: c.warning,
+        borderDash: [6, 4],
+        borderWidth: 2,
+        pointRadius: 3,
+        pointHoverRadius: 5,
+        pointStyle: "rectRot",
+        tension: 0.1,
+        spanGaps: true,
+        order: 0,
+      });
+    }
+
+    if (datasets.length < 2) return false;
 
     makeChart(
-      "chart-price-10y",
+      "chart-compare",
       {
-        data: {
-          datasets: [
-            {
-              type: "line",
-              label: "Monthly close ($)",
-              data: pricePts,
-              borderColor: c.info,
-              backgroundColor: "rgba(110,168,254,0.08)",
-              fill: true,
-              tension: 0.15,
-              pointRadius: 0,
-              borderWidth: 2,
-            },
-            {
-              type: "scatter",
-              label: "Earnings report",
-              data: earnPoints,
-              pointRadius: earnPoints.length ? 5 : 0,
-              pointHoverRadius: 7,
-              backgroundColor: c.success,
-              borderColor: "#0a0b0f",
-              borderWidth: 1,
-            },
-          ],
-        },
+        data: { datasets },
         options: {
+          interaction: { mode: "index", intersect: false },
           plugins: {
-            legend: { display: true },
+            legend: { display: true, position: "top" },
             tooltip: {
               callbacks: {
+                title(items) {
+                  const i = items[0]?.parsed?.x;
+                  if (i == null) return "";
+                  const d = new Date(bars[Math.round(i)]?.t * 1000);
+                  return d.toLocaleDateString("en-US", { month: "short", year: "numeric" });
+                },
                 label(ctx) {
-                  if (ctx.raw?.eps != null) {
-                    return `${ctx.raw.date}: EPS $${ctx.raw.eps} · price $${ctx.raw.y?.toFixed(2)}`;
+                  const raw = ctx.raw;
+                  if (ctx.dataset.yAxisID === "yEps") {
+                    const tag = raw?.date || (raw?.year ? `FY${String(raw.year).slice(-2)}` : "");
+                    return `${ctx.dataset.label}: $${ctx.parsed.y.toFixed(2)}${tag ? ` · ${tag}` : ""}`;
                   }
-                  return `$${ctx.parsed.y?.toFixed(2)}`;
+                  return `${ctx.dataset.label}: $${ctx.parsed.y.toFixed(2)}`;
                 },
               },
             },
@@ -132,24 +193,54 @@ window.ThesisCharts = (function () {
             x: {
               type: "linear",
               min: 0,
-              max: Math.max(bars.length - 1, 1),
+              max: Math.max(xMax, 1),
               ticks: {
-                maxTicksLimit: 12,
+                maxTicksLimit: 11,
                 font: { size: 9 },
-                callback: (v) => labels[Math.round(v)] || "",
+                callback: (v) => tickLabels[Math.round(v)] || "",
               },
+              grid: { color: "rgba(42,49,66,0.6)" },
             },
-            y: { ticks: { callback: (v) => `$${v}` } },
+            yPrice: {
+              type: "linear",
+              position: "left",
+              title: {
+                display: true,
+                text: "Price ($)",
+                color: c.info,
+                font: { size: 11, weight: "600" },
+              },
+              ticks: {
+                color: c.info,
+                callback: (v) => `$${v}`,
+              },
+              grid: { color: "rgba(42,49,66,0.85)" },
+            },
+            yEps: {
+              type: "linear",
+              position: "right",
+              title: {
+                display: true,
+                text: "EPS ($)",
+                color: c.success,
+                font: { size: 11, weight: "600" },
+              },
+              ticks: {
+                color: c.success,
+                callback: (v) => `$${v}`,
+              },
+              grid: { drawOnChartArea: false },
+            },
           },
         },
       },
-      { xl: true }
+      { xxl: true }
     );
     return true;
   }
 
   function renderQuarterlyEps(market, c, makeChart) {
-    const q = (market?.earningsQuarterly || []).filter((e) => e.eps != null);
+    const q = (market.earningsQuarterly || []).filter((e) => e.eps != null);
     if (q.length < 2) return false;
 
     const labels = q.map((e) => {
@@ -185,7 +276,7 @@ window.ThesisCharts = (function () {
           },
         },
       },
-      { xl: true }
+      { lg: true }
     );
     return true;
   }
@@ -246,11 +337,9 @@ window.ThesisCharts = (function () {
     }
 
     if (view === "thesis") {
+      if (market) renderPriceEarningsCompare(market, c, makeChart);
       renderAnnualEps(thesis, market, c, makeChart);
-      if (market) {
-        renderPriceEarnings(id, thesis, market, c, makeChart);
-        renderQuarterlyEps(market, c, makeChart);
-      }
+      if (market) renderQuarterlyEps(market, c, makeChart);
     }
     return market;
   }

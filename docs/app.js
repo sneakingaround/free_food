@@ -89,8 +89,9 @@
     if (!el) return;
     const box = el.closest(".chart-box");
     if (box) {
-      box.classList.remove("chart-box-lg", "chart-box-xl");
-      if (sizeOpts?.xl) box.classList.add("chart-box-xl");
+      box.classList.remove("chart-box-lg", "chart-box-xl", "chart-box-xxl");
+      if (sizeOpts?.xxl) box.classList.add("chart-box-xxl");
+      else if (sizeOpts?.xl) box.classList.add("chart-box-xl");
       else if (sizeOpts?.lg) box.classList.add("chart-box-lg");
     }
     const c = chartColors();
@@ -105,7 +106,9 @@
     };
     const merged = { ...config.options };
     merged.plugins = { ...base.plugins, ...(config.options?.plugins || {}) };
-    merged.scales = { ...base.scales, ...(config.options?.scales || {}) };
+    const customScales = config.options?.scales || {};
+    merged.scales = { ...base.scales, ...customScales };
+    if (customScales.yPrice || customScales.yEps) delete merged.scales.y;
     chartInstances.push(new Chart(el, { ...config, options: merged }));
   }
 
@@ -538,10 +541,10 @@
       <h2>Why this works — four load-bearing pillars</h2>
       <div class="grid-2">${t.pillars.map(renderCard).join("")}</div>
 
-      <h2 class="chart-section-title">10-year price &amp; earnings</h2>
-      <p class="chart-section-lead">Monthly price (up to 10y when available) with reported EPS marked at each earnings date. Quarterly actuals vs consensus below.</p>
-      <div class="chart-box chart-box-xl"><canvas id="chart-price-10y"></canvas></div>
-      <p class="caption">Green dots = reported quarterly EPS on the price path. Source: Yahoo Finance.</p>
+      <h2 class="chart-section-title">Price vs earnings (10y)</h2>
+      <p class="chart-section-lead"><strong>Left axis</strong> = monthly share price. <strong>Right axis</strong> = EPS trend (quarterly reported line + annual fiscal-year line). Same timeline — comparable at a glance.</p>
+      <div class="chart-box chart-box-xxl"><canvas id="chart-compare"></canvas></div>
+      <p class="caption">Blue fill = price. Green = quarterly EPS. Amber dashed = annual EPS. Source: Yahoo Finance.</p>
 
       <h3>Quarterly EPS — reported vs estimate</h3>
       <div class="chart-box chart-box-xl"><canvas id="chart-eps-quarterly"></canvas></div>
