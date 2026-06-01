@@ -326,7 +326,7 @@ window.ThesisCharts = (function () {
     );
   }
 
-  function mount(id, thesis, view, helpers) {
+  async function mount(id, thesis, view, helpers) {
     const { chartColors, makeChart, getMetric } = helpers;
     const metricId = getMetric?.() || "sales";
     const meta = METRICS[metricId] || METRICS.sales;
