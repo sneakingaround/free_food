@@ -6,7 +6,7 @@ Mobile-friendly static cards for **IBM**, **ServiceNow (NOW)**, **Nokia (NOK)**,
 
 **https://sneakingaround.github.io/free_food/**
 
-(After the first push, enable **Settings → Pages → Source: GitHub Actions** if needed.)
+After the workflow runs, set **Settings → Pages → Build and deployment → Deploy from branch → `gh-pages` → `/ (root)`**.
 
 ## Local
 

@@ -4,38 +4,37 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
-  schedule:
-    - cron: "0 14 * * *"
 
+# Publishes static files to branch gh-pages (peaceiris). No github-pages environment required.
 permissions:
-  contents: read
-  pages: write
-  id-token: write
+  contents: write
 
 concurrency:
   group: pages
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
-  build:
+  deploy:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: Refresh market data
-        run: python3 fetch-market.py
-      - uses: actions/upload-pages-artifact@v3
-        with:
-          path: .
 
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - uses: actions/deploy-pages@v4
-        id: deployment
+      - name: Refresh market data
+        run: python3 fetch-market.py || true
+
+      - name: Assemble site
+        run: |
+          mkdir -p _site
+          cp index.html styles.css app.js data.js vpvr.js chart.umd.min.js .nojekyll _site/
+          cp -r market _site/
+
+      - name: Deploy to gh-pages branch
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./_site
+          force_orphan: true
